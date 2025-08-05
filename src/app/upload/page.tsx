@@ -47,6 +47,16 @@ export default function UploadPage() {
     }
   };
 
+  const handleClearData = async () => {
+    try {
+      await chatStorage.clearChatData();
+      alert('Chat data cleared successfully. You can now upload a new file.');
+    } catch (error) {
+      console.error('Error clearing chat data:', error);
+      alert('Failed to clear chat data.');
+    }
+  };
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#fdf4f2' }}>
       {/* Header */}
@@ -73,6 +83,12 @@ export default function UploadPage() {
                 className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
               >
                 View Chat
+              </button>
+              <button 
+                onClick={handleClearData}
+                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+              >
+                Clear Data
               </button>
               <ThemeToggle />
             </div>

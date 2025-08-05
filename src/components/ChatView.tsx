@@ -6,6 +6,8 @@ import ChatMessage from './ChatMessage';
 
 interface ChatViewProps {
   messages: ChatMessageType[];
+  highlightedMessageId?: string;
+  onMessageClick?: (message: ChatMessageType) => void;
 }
 
 interface MessageGroup {
@@ -13,7 +15,7 @@ interface MessageGroup {
   messages: ChatMessageType[];
 }
 
-export default function ChatView({ messages }: ChatViewProps) {
+export default function ChatView({ messages, highlightedMessageId, onMessageClick }: ChatViewProps) {
   const [displayedMessages, setDisplayedMessages] = useState<ChatMessageType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -99,7 +101,15 @@ export default function ChatView({ messages }: ChatViewProps) {
           {/* Messages for this date */}
           <div className="space-y-1">
             {group.messages.map((message) => (
-              <ChatMessage key={message.id} message={message} />
+              <div
+                key={message.id}
+                className={`transition-all duration-300 ${
+                  highlightedMessageId === message.id ? 'bg-yellow-100 dark:bg-yellow-900/20 border-l-4 border-yellow-500' : ''
+                }`}
+                onClick={() => onMessageClick?.(message)}
+              >
+                <ChatMessage message={message} />
+              </div>
             ))}
           </div>
         </div>

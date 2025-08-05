@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { ParsedChatData } from '@/types/chat';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { ParsedChatData, ChatMessage } from '@/types/chat';
 import { chatStorage } from '@/utils/storage';
 import { filterMessages } from '@/utils/chatParser';
 import ChatView from '@/components/ChatView';
+import AISearch from '@/components/AISearch';
+import AISearchResults from '@/components/AISearchResults';
 
 export default function ChatPage() {
   const [chatData, setChatData] = useState<ParsedChatData | null>(null);
@@ -15,6 +17,10 @@ export default function ChatPage() {
     timeRange: null as { start: string; end: string } | null,
     sender: null as string | null
   });
+  const [aiSearchResults, setAiSearchResults] = useState<ChatMessage[]>([]);
+  const [aiSearchReasons, setAiSearchReasons] = useState<{[key: string]: string}>({});
+  const [highlightedMessageId, setHighlightedMessageId] = useState<string | undefined>(undefined);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   // Load chat data from storage
   useEffect(() => {
@@ -50,19 +56,6 @@ export default function ChatPage() {
     };
 
     loadChatData();
-
-    // Cleanup function to clear data when component unmounts
-    return () => {
-      const clearData = async () => {
-        try {
-          await chatStorage.clearChatData();
-          console.log('Chat data cleared on page exit');
-        } catch (error) {
-          console.error('Error clearing chat data:', error);
-        }
-      };
-      clearData();
-    };
   }, []);
 
   // Filter messages based on current filters
@@ -77,6 +70,30 @@ export default function ChatPage() {
 
   const formatDate = (date: Date) => {
     return date.toISOString().split('T')[0];
+  };
+
+  const handleAISearchResults = (results: ChatMessage[], reasons?: {[key: string]: string}, answer?: string) => {
+    setAiSearchResults(results);
+    setAiSearchReasons(reasons || {});
+    setHighlightedMessageId(undefined);
+  };
+
+  const handleClearAISearch = () => {
+    setAiSearchResults([]);
+    setAiSearchReasons({});
+    setHighlightedMessageId(undefined);
+  };
+
+  const handleJumpToMessage = (message: ChatMessage) => {
+    setHighlightedMessageId(message.id);
+    
+    // Scroll to the message
+    setTimeout(() => {
+      const messageElement = document.querySelector(`[data-message-id="${message.id}"]`);
+      if (messageElement) {
+        messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
   };
 
   if (!chatData) {
@@ -97,6 +114,22 @@ export default function ChatPage() {
 
   return (
     <div className="space-y-8">
+      {/* AI Search Section */}
+      <AISearch 
+        messages={chatData.messages}
+        onSearchResults={handleAISearchResults}
+        onClearSearch={handleClearAISearch}
+      />
+      
+      {/* AI Search Results */}
+      {aiSearchResults.length > 0 && (
+        <AISearchResults 
+          results={aiSearchResults}
+          onJumpToMessage={handleJumpToMessage}
+          searchReasons={aiSearchReasons}
+        />
+      )}
+      
       {/* Messages Section */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-lg">
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
@@ -168,8 +201,12 @@ export default function ChatPage() {
         </div>
 
         {/* Chat Messages */}
-        <div className="h-[600px] overflow-y-auto">
-          <ChatView messages={filteredMessages} />
+        <div className="h-[600px] overflow-y-auto" ref={chatContainerRef}>
+          <ChatView 
+            messages={filteredMessages} 
+            highlightedMessageId={highlightedMessageId}
+            onMessageClick={(message) => setHighlightedMessageId(message.id)}
+          />
         </div>
       </div>
     </div>

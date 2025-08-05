@@ -17,7 +17,6 @@ export default function SharedSidebar({ chatData }: SharedSidebarProps) {
   const analyticsItems = [
     { href: '/chat/analytics', label: 'Overview', icon: '📊' },
     { href: '/chat/analytics/activity', label: 'Activity Patterns', icon: '📈' },
-    { href: '/chat/analytics/activity-charts', label: 'Activity Charts', icon: '📊' },
     { href: '/chat/analytics/detailed', label: 'Response Time', icon: '⏱️' },
     { href: '/chat/analytics/special-occasions', label: 'Special Occasions', icon: '🎉' },
   ];

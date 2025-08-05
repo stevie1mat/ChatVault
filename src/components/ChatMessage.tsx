@@ -22,6 +22,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
   return (
     <div className={`flex ${message.isOwnMessage ? 'justify-end' : 'justify-start'} mb-4`}>
       <div
+        data-message-id={message.id}
         className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
           message.isOwnMessage
             ? 'bg-blue-500 text-white rounded-br-none'
