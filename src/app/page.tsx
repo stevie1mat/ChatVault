@@ -29,8 +29,23 @@ export default function Home() {
     setChatData(data);
     // Store chat data in localStorage for analytics page
     console.log('Storing chat data:', data);
-    localStorage.setItem('chatData', JSON.stringify(data));
-    console.log('Stored in localStorage:', localStorage.getItem('chatData'));
+    try {
+      const dataToStore = {
+        ...data,
+        messages: data.messages.map(msg => ({
+          ...msg,
+          timestamp: msg.timestamp.toISOString()
+        })),
+        dateRange: {
+          start: data.dateRange.start.toISOString(),
+          end: data.dateRange.end.toISOString()
+        }
+      };
+      localStorage.setItem('chatData', JSON.stringify(dataToStore));
+      console.log('Stored in localStorage:', localStorage.getItem('chatData'));
+    } catch (error) {
+      console.error('Error storing chat data:', error);
+    }
   }, []);
 
   const handleFiltersChange = useCallback((newFilters: SearchFiltersType) => {

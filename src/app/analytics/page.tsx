@@ -33,6 +33,7 @@ export default function AnalyticsPage() {
           start: new Date(parsedData.dateRange.start),
           end: new Date(parsedData.dateRange.end)
         };
+        console.log('Processed data:', parsedData);
         setChatData(parsedData);
       } catch (error) {
         console.error('Error parsing stored chat data:', error);
