@@ -93,16 +93,6 @@ export default function ChatPage() {
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           {/* Sender Filter Pills */}
           <div className="flex items-center space-x-2">
-            <button
-              onClick={() => setFilters(prev => ({ ...prev, sender: 'all' }))}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                filters.sender === 'all'
-                  ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-              }`}
-            >
-              All
-            </button>
             {chatData.participants.map((participant) => (
               <button
                 key={participant}
