@@ -5,36 +5,19 @@ import { filterMessages } from '@/utils/chatParser';
 import { chatStorage } from '@/utils/storage';
 
 interface DetailedAnalyticsData {
-  responseTimeStats: {
-    averageResponseTime: number;
-    fastestResponse: number;
-    slowestResponse: number;
-    responseTimeDistribution: {
-      immediate: number;
-      quick: number;
-      normal: number;
-      slow: number;
-    };
-    participantResponseTimes: Array<{
-      name: string;
-      averageResponseTime: number;
-      fastestResponse: number;
-      slowestResponse: number;
-      totalResponses: number;
-      responseTimeDistribution: {
-        immediate: number;
-        quick: number;
-        normal: number;
-        slow: number;
-      };
-    }>;
-  };
-  specialOccasions: {
-    wishes: { count: number; messages: string[] };
-    congratulations: { count: number; messages: string[] };
-    festivals: { count: number; messages: string[] };
-    specialDays: { count: number; messages: string[] };
-    birthdays: { count: number; messages: string[] };
+  participantStats: Array<{
+    name: string;
+    messageCount: number;
+    percentage: number;
+    averageLength: number;
+  }>;
+  mostActiveHour: { hour: number; count: number };
+  mostActiveDay: { day: string; count: number };
+  mostActiveDate: { date: string; count: number };
+  messageLengthStats: {
+    average: number;
+    shortest: number;
+    longest: number;
   };
 }
 
@@ -92,127 +75,91 @@ export default function DetailedAnalyticsPage() {
   const detailedAnalytics = useMemo((): DetailedAnalyticsData => {
     if (filteredMessages.length === 0) {
       return {
-        responseTimeStats: {
-          averageResponseTime: 0,
-          fastestResponse: 0,
-          slowestResponse: 0,
-          responseTimeDistribution: {
-            immediate: 0,
-            quick: 0,
-            normal: 0,
-            slow: 0,
-          },
-          participantResponseTimes: [],
-        },
-        specialOccasions: {
-          wishes: { count: 0, messages: [] },
-          congratulations: { count: 0, messages: [] },
-          festivals: { count: 0, messages: [] },
-          specialDays: { count: 0, messages: [] },
-          birthdays: { count: 0, messages: [] },
+        participantStats: [],
+        mostActiveHour: { hour: 0, count: 0 },
+        mostActiveDay: { day: 'N/A', count: 0 },
+        mostActiveDate: { date: 'N/A', count: 0 },
+        messageLengthStats: {
+          average: 0,
+          shortest: 0,
+          longest: 0,
         },
       };
     }
 
-    // Response Time Analysis
-    const responseTimes: number[] = [];
-    const participantResponseTimes = new Map<string, number[]>();
-
-    for (let i = 0; i < filteredMessages.length - 1; i++) {
-      const currentMessage = filteredMessages[i];
-      const nextMessage = filteredMessages[i + 1];
-      
-      if (currentMessage.sender !== nextMessage.sender) {
-        const timeDiff = (nextMessage.timestamp.getTime() - currentMessage.timestamp.getTime()) / (1000 * 60);
-        responseTimes.push(timeDiff);
-        
-        if (!participantResponseTimes.has(nextMessage.sender)) {
-          participantResponseTimes.set(nextMessage.sender, []);
-        }
-        participantResponseTimes.get(nextMessage.sender)!.push(timeDiff);
-      }
-    }
-
-    const averageResponseTime = responseTimes.length > 0 ? responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length : 0;
-    const fastestResponse = responseTimes.length > 0 ? Math.min(...responseTimes) : 0;
-    const slowestResponse = responseTimes.length > 0 ? Math.max(...responseTimes) : 0;
-
-    const responseTimeDistribution = {
-      immediate: responseTimes.filter(t => t <= 1).length,
-      quick: responseTimes.filter(t => t > 1 && t <= 5).length,
-      normal: responseTimes.filter(t => t > 5 && t <= 30).length,
-      slow: responseTimes.filter(t => t > 30).length,
-    };
-
-    const participantResponseStats = Array.from(participantResponseTimes.entries()).map(([name, times]) => {
-      const avg = times.reduce((a, b) => a + b, 0) / times.length;
-      const fastest = Math.min(...times);
-      const slowest = Math.max(...times);
-      
-      const distribution = {
-        immediate: times.filter(t => t <= 1).length,
-        quick: times.filter(t => t > 1 && t <= 5).length,
-        normal: times.filter(t => t > 5 && t <= 30).length,
-        slow: times.filter(t => t > 30).length,
-      };
-
-      return {
-        name,
-        averageResponseTime: avg,
-        fastestResponse: fastest,
-        slowestResponse: slowest,
-        totalResponses: times.length,
-        responseTimeDistribution: distribution,
-      };
-    }).sort((a, b) => b.totalResponses - a.totalResponses);
-
-    // Special Occasions Analysis
-    const wishesKeywords = ['wish', 'hope', 'want', 'would like', 'dream', 'aspire', 'desire'];
-    const congratulationsKeywords = ['congrat', 'well done', 'great job', 'amazing', 'excellent', 'outstanding', 'brilliant', 'fantastic'];
-    const festivalsKeywords = ['happy', 'merry', 'celebration', 'festival', 'holiday', 'christmas', 'easter', 'diwali', 'ramadan', 'hanukkah', 'thanksgiving'];
-    const specialDaysKeywords = ['anniversary', 'graduation', 'promotion', 'achievement', 'milestone', 'success', 'accomplishment'];
-    const birthdayKeywords = ['birthday', 'bday', 'born', 'cake', '🎂', '🎉', '🎈', '🎁', 'happy birthday', 'many happy returns'];
-
-    const wishes: string[] = [];
-    const congratulations: string[] = [];
-    const festivals: string[] = [];
-    const specialDays: string[] = [];
-    const birthdays: string[] = [];
-
+    // Participant Activity Analysis
+    const participantMessages = new Map<string, number>();
     filteredMessages.forEach(message => {
-      const content = message.content.toLowerCase();
-      
-      if (wishesKeywords.some(keyword => content.includes(keyword))) {
-        wishes.push(message.content);
+      if (!participantMessages.has(message.sender)) {
+        participantMessages.set(message.sender, 0);
       }
-      if (congratulationsKeywords.some(keyword => content.includes(keyword))) {
-        congratulations.push(message.content);
-      }
-      if (festivalsKeywords.some(keyword => content.includes(keyword))) {
-        festivals.push(message.content);
-      }
-      if (specialDaysKeywords.some(keyword => content.includes(keyword))) {
-        specialDays.push(message.content);
-      }
-      if (birthdayKeywords.some(keyword => content.includes(keyword))) {
-        birthdays.push(message.content);
-      }
+      participantMessages.set(message.sender, participantMessages.get(message.sender)! + 1);
     });
 
+    const totalMessages = filteredMessages.length;
+    const participantStats = Array.from(participantMessages.entries()).map(([name, count]) => ({
+      name,
+      messageCount: count,
+      percentage: totalMessages > 0 ? (count / totalMessages) * 100 : 0,
+      averageLength: 0, // Placeholder, will be calculated later
+    }));
+
+    // Most Active Hour Analysis
+    const hourCounts = new Array(24).fill(0);
+    filteredMessages.forEach(message => {
+      hourCounts[message.timestamp.getHours()]++;
+    });
+    const mostActiveHour = hourCounts.reduce((max, count, hour) => {
+      if (count > max.count) {
+        return { hour, count };
+      }
+      return max;
+    }, { hour: 0, count: 0 });
+
+    // Most Active Day Analysis
+    const dayCounts = new Array(7).fill(0);
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    filteredMessages.forEach(message => {
+      const day = message.timestamp.getDay();
+      dayCounts[day]++;
+    });
+    const mostActiveDayIndex = dayCounts.indexOf(Math.max(...dayCounts));
+    const mostActiveDay = { day: dayNames[mostActiveDayIndex], count: dayCounts[mostActiveDayIndex] };
+
+    // Most Active Date Analysis
+    const dateCounts = new Map<string, number>();
+    filteredMessages.forEach(message => {
+      const date = message.timestamp.toISOString().split('T')[0];
+      if (!dateCounts.has(date)) {
+        dateCounts.set(date, 0);
+      }
+      dateCounts.set(date, dateCounts.get(date)! + 1);
+    });
+    const mostActiveDate = Array.from(dateCounts.entries()).reduce((max, [date, count]) => {
+      if (count > max.count) {
+        return { date, count };
+      }
+      return max;
+    }, { date: 'N/A', count: 0 });
+
+    // Message Length Analysis
+    const messageLengths: number[] = [];
+    filteredMessages.forEach(message => {
+      messageLengths.push(message.content.length);
+    });
+    const averageLength = messageLengths.length > 0 ? messageLengths.reduce((a, b) => a + b, 0) / messageLengths.length : 0;
+    const shortest = messageLengths.length > 0 ? Math.min(...messageLengths) : 0;
+    const longest = messageLengths.length > 0 ? Math.max(...messageLengths) : 0;
+
     return {
-      responseTimeStats: {
-        averageResponseTime,
-        fastestResponse,
-        slowestResponse,
-        responseTimeDistribution,
-        participantResponseTimes: participantResponseStats,
-      },
-      specialOccasions: {
-        wishes: { count: wishes.length, messages: wishes },
-        congratulations: { count: congratulations.length, messages: congratulations },
-        festivals: { count: festivals.length, messages: festivals },
-        specialDays: { count: specialDays.length, messages: specialDays },
-        birthdays: { count: birthdays.length, messages: birthdays },
+      participantStats,
+      mostActiveHour,
+      mostActiveDay,
+      mostActiveDate,
+      messageLengthStats: {
+        average: averageLength,
+        shortest,
+        longest,
       },
     };
   }, [filteredMessages]);
@@ -265,188 +212,132 @@ export default function DetailedAnalyticsPage() {
         <h2 className="text-4xl font-bold text-gray-900 dark:text-white">Detailed Analytics</h2>
       </div>
 
-      {/* Response Time Analysis */}
+      {/* Participant Activity */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Response Time Analysis</h3>
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Participant Activity</h3>
         
-        {/* Overall Response Time Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Participant
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Messages
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Percentage
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Avg. Length
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              {detailedAnalytics.participantStats.map((participant, index) => (
+                <tr key={participant.name}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    {participant.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {participant.messageCount}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {Math.round(participant.percentage)}%
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {Math.round(participant.averageLength)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Most Active Hour */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Most Active Hour</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 border border-blue-100 dark:border-blue-800/30">
             <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-              {Math.round(detailedAnalytics.responseTimeStats.averageResponseTime)}m
+              {detailedAnalytics.mostActiveHour.hour}
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Average Response</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Hour</div>
           </div>
-          
           <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4 border border-green-100 dark:border-green-800/30">
             <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-              {Math.round(detailedAnalytics.responseTimeStats.fastestResponse)}m
+              {detailedAnalytics.mostActiveHour.count}
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Fastest Response</div>
-          </div>
-          
-          <div className="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-xl p-4 border border-orange-100 dark:border-orange-800/30">
-            <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-              {Math.round(detailedAnalytics.responseTimeStats.slowestResponse)}m
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Slowest Response</div>
-          </div>
-        </div>
-
-        {/* Response Time Distribution */}
-        <div className="mb-8">
-          <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Response Time Distribution</h4>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border border-green-200 dark:border-green-800/30">
-              <div className="text-xl font-bold text-green-600 dark:text-green-400">
-                {detailedAnalytics.responseTimeStats.responseTimeDistribution.immediate}
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Immediate (≤1m)</div>
-            </div>
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800/30">
-              <div className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                {detailedAnalytics.responseTimeStats.responseTimeDistribution.quick}
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Quick (1-5m)</div>
-            </div>
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-4 border border-yellow-200 dark:border-yellow-800/30">
-              <div className="text-xl font-bold text-yellow-600 dark:text-yellow-400">
-                {detailedAnalytics.responseTimeStats.responseTimeDistribution.normal}
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Normal (5-30m)</div>
-            </div>
-            <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-4 border border-red-200 dark:border-red-800/30">
-              <div className="text-xl font-bold text-red-600 dark:text-red-400">
-                {detailedAnalytics.responseTimeStats.responseTimeDistribution.slow}
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Slow (&gt;30m)</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Participant Response Times */}
-        <div>
-          <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Participant Response Times</h4>
-          <div className="space-y-4">
-            {detailedAnalytics.responseTimeStats.participantResponseTimes.map((participant, index) => (
-              <div key={participant.name} className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${
-                      index === 0 ? 'bg-yellow-500' : 
-                      index === 1 ? 'bg-gray-400' : 
-                      'bg-orange-500'
-                    }`}>
-                      {index + 1}
-                    </div>
-                    <div>
-                      <div className="font-medium text-gray-900 dark:text-white">{participant.name}</div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        {participant.totalResponses} responses
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-lg font-semibold text-gray-900 dark:text-white">
-                      {Math.round(participant.averageResponseTime)}m avg
-                    </div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {Math.round(participant.fastestResponse)}m fastest
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Participant Response Distribution */}
-                <div className="grid grid-cols-4 gap-2 mt-3">
-                  <div className="text-center">
-                    <div className="text-sm font-medium text-green-600 dark:text-green-400">
-                      {participant.responseTimeDistribution.immediate}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Immediate</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                      {participant.responseTimeDistribution.quick}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Quick</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-sm font-medium text-yellow-600 dark:text-yellow-400">
-                      {participant.responseTimeDistribution.normal}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Normal</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-sm font-medium text-red-600 dark:text-red-400">
-                      {participant.responseTimeDistribution.slow}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Slow</div>
-                  </div>
-                </div>
-              </div>
-            ))}
+            <div className="text-sm text-gray-600 dark:text-gray-400">Messages</div>
           </div>
         </div>
       </div>
 
-      {/* Special Occasions */}
+      {/* Most Active Day */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Special Occasions</h3>
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Most Active Day</h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          <div 
-            className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 border border-blue-100 dark:border-blue-800/30 cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => handleCategoryClick('Wishes', detailedAnalytics.specialOccasions.wishes.messages)}
-          >
-            <div className="text-2xl mb-2">🎋</div>
-            <div className="text-xl font-bold text-blue-600 dark:text-blue-400">
-              {detailedAnalytics.specialOccasions.wishes.count}
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Wishes</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-4 border border-purple-100 dark:border-purple-800/30">
+                         <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+               {detailedAnalytics.mostActiveDay.day}
+             </div>
+             <div className="text-sm text-gray-600 dark:text-gray-400">Day</div>
           </div>
-
-          <div 
-            className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4 border border-green-100 dark:border-green-800/30 cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => handleCategoryClick('Congratulations', detailedAnalytics.specialOccasions.congratulations.messages)}
-          >
-            <div className="text-2xl mb-2">🎉</div>
-            <div className="text-xl font-bold text-green-600 dark:text-green-400">
-              {detailedAnalytics.specialOccasions.congratulations.count}
+          <div className="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-xl p-4 border border-orange-100 dark:border-orange-800/30">
+            <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+              {detailedAnalytics.mostActiveDay.count}
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Congratulations</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Messages</div>
           </div>
+        </div>
+      </div>
 
-          <div 
-            className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-4 border border-purple-100 dark:border-purple-800/30 cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => handleCategoryClick('Festivals', detailedAnalytics.specialOccasions.festivals.messages)}
-          >
-            <div className="text-2xl mb-2">🎊</div>
-            <div className="text-xl font-bold text-purple-600 dark:text-purple-400">
-              {detailedAnalytics.specialOccasions.festivals.count}
+      {/* Most Active Date */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Most Active Date</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-xl p-4 border border-yellow-100 dark:border-yellow-800/30">
+            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+              {detailedAnalytics.mostActiveDate.date}
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Festivals</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Date</div>
           </div>
-
-          <div 
-            className="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-xl p-4 border border-orange-100 dark:border-orange-800/30 cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => handleCategoryClick('Special Days', detailedAnalytics.specialOccasions.specialDays.messages)}
-          >
-            <div className="text-2xl mb-2">🎯</div>
-            <div className="text-xl font-bold text-orange-600 dark:text-orange-400">
-              {detailedAnalytics.specialOccasions.specialDays.count}
+          <div className="bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 rounded-xl p-4 border border-red-100 dark:border-red-800/30">
+            <div className="text-2xl font-bold text-red-600 dark:text-red-400">
+              {detailedAnalytics.mostActiveDate.count}
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Special Days</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Messages</div>
           </div>
+        </div>
+      </div>
 
-          <div 
-            className="bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 rounded-xl p-4 border border-pink-100 dark:border-pink-800/30 cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => handleCategoryClick('Birthdays', detailedAnalytics.specialOccasions.birthdays.messages)}
-          >
-            <div className="text-2xl mb-2">🎂</div>
-            <div className="text-xl font-bold text-pink-600 dark:text-pink-400">
-              {detailedAnalytics.specialOccasions.birthdays.count}
+      {/* Message Length Analysis */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Message Length Analysis</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-xl p-4 border border-indigo-100 dark:border-indigo-800/30">
+            <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+              {Math.round(detailedAnalytics.messageLengthStats.average)}
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Birthdays</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Average Length</div>
+          </div>
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 border border-blue-100 dark:border-blue-800/30">
+            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              {detailedAnalytics.messageLengthStats.shortest}
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Shortest</div>
+          </div>
+          <div className="bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 rounded-xl p-4 border border-red-100 dark:border-red-800/30">
+            <div className="text-2xl font-bold text-red-600 dark:text-red-400">
+              {detailedAnalytics.messageLengthStats.longest}
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Longest</div>
           </div>
         </div>
       </div>
