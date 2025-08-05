@@ -26,6 +26,7 @@ export default function Home() {
   }, [chatData, filters]);
 
   const handleChatParsed = useCallback((data: ParsedChatData) => {
+    console.log('handleChatParsed called with data:', data);
     setChatData(data);
     // Store chat data in localStorage for analytics page
     console.log('Storing chat data:', data);
@@ -41,8 +42,10 @@ export default function Home() {
           end: data.dateRange.end.toISOString()
         }
       };
+      console.log('Data to store:', dataToStore);
       localStorage.setItem('chatData', JSON.stringify(dataToStore));
       console.log('Stored in localStorage:', localStorage.getItem('chatData'));
+      console.log('All localStorage keys after storage:', Object.keys(localStorage));
     } catch (error) {
       console.error('Error storing chat data:', error);
     }
@@ -76,6 +79,18 @@ export default function Home() {
                 <a href="/analytics" className="text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 px-3 py-1 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors">
                   📊 Analytics
                 </a>
+              )}
+              {chatData && (
+                <button 
+                  onClick={() => {
+                    console.log('Manual check from main page - chatData:', chatData);
+                    console.log('Manual check from main page - localStorage:', localStorage.getItem('chatData'));
+                    console.log('Manual check from main page - All keys:', Object.keys(localStorage));
+                  }}
+                  className="text-sm text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 px-3 py-1 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors"
+                >
+                  Debug Storage
+                </button>
               )}
               <a
                 href="https://github.com/stevie1mat/ChatVault"
