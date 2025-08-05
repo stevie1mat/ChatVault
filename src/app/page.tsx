@@ -28,26 +28,45 @@ export default function Home() {
   const handleChatParsed = useCallback((data: ParsedChatData) => {
     console.log('handleChatParsed called with data:', data);
     setChatData(data);
-    // Store chat data in localStorage for analytics page
-    console.log('Storing chat data:', data);
+    // Store only essential analytics data in localStorage to avoid quota issues
+    console.log('Storing analytics data...');
     try {
-      const dataToStore = {
-        ...data,
-        messages: data.messages.map(msg => ({
-          ...msg,
-          timestamp: msg.timestamp.toISOString()
-        })),
+      const analyticsData = {
+        totalMessages: data.totalMessages,
+        participants: data.participants,
         dateRange: {
           start: data.dateRange.start.toISOString(),
           end: data.dateRange.end.toISOString()
-        }
+        },
+        // Store only message metadata for analytics, not full content
+        messages: data.messages.map(msg => ({
+          timestamp: msg.timestamp.toISOString(),
+          sender: msg.sender,
+          content: msg.content.substring(0, 100), // Limit content length
+          isOwnMessage: msg.isOwnMessage
+        }))
       };
-      console.log('Data to store:', dataToStore);
-      localStorage.setItem('chatData', JSON.stringify(dataToStore));
+      console.log('Analytics data to store:', analyticsData);
+      localStorage.setItem('chatData', JSON.stringify(analyticsData));
       console.log('Stored in localStorage:', localStorage.getItem('chatData'));
       console.log('All localStorage keys after storage:', Object.keys(localStorage));
     } catch (error) {
       console.error('Error storing chat data:', error);
+      // Try storing with even less data if quota is still exceeded
+      try {
+        const minimalData = {
+          totalMessages: data.totalMessages,
+          participants: data.participants,
+          dateRange: {
+            start: data.dateRange.start.toISOString(),
+            end: data.dateRange.end.toISOString()
+          }
+        };
+        localStorage.setItem('chatData', JSON.stringify(minimalData));
+        console.log('Stored minimal data in localStorage');
+      } catch (minimalError) {
+        console.error('Error storing minimal data:', minimalError);
+      }
     }
   }, []);
 

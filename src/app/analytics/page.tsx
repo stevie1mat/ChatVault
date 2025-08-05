@@ -25,17 +25,32 @@ export default function AnalyticsPage() {
       try {
         const parsedData = JSON.parse(storedChatData);
         console.log('Parsed data:', parsedData);
-        // Convert date strings back to Date objects
-        parsedData.messages = parsedData.messages.map((msg: any) => ({
-          ...msg,
-          timestamp: new Date(msg.timestamp)
-        }));
-        parsedData.dateRange = {
-          start: new Date(parsedData.dateRange.start),
-          end: new Date(parsedData.dateRange.end)
-        };
-        console.log('Processed data:', parsedData);
-        setChatData(parsedData);
+        
+        // Check if we have full message data or just analytics data
+        if (parsedData.messages && parsedData.messages.length > 0) {
+          // Convert date strings back to Date objects
+          parsedData.messages = parsedData.messages.map((msg: any) => ({
+            ...msg,
+            timestamp: new Date(msg.timestamp)
+          }));
+          parsedData.dateRange = {
+            start: new Date(parsedData.dateRange.start),
+            end: new Date(parsedData.dateRange.end)
+          };
+          console.log('Processed data with messages:', parsedData);
+          setChatData(parsedData);
+        } else {
+          // We only have minimal data, show a message
+          console.log('Only minimal data available');
+          setChatData({
+            ...parsedData,
+            messages: [], // No messages available
+            dateRange: {
+              start: new Date(parsedData.dateRange.start),
+              end: new Date(parsedData.dateRange.end)
+            }
+          });
+        }
       } catch (error) {
         console.error('Error parsing stored chat data:', error);
       }
@@ -175,7 +190,41 @@ export default function AnalyticsPage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <AnalyticsDashboard messages={filteredMessages} participants={chatData.participants} />
+        {chatData.messages.length === 0 ? (
+          <div className="text-center space-y-8">
+            <div className="space-y-6">
+              <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Basic Analytics
+              </h2>
+              <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                Chat data was too large for full analytics. Here are the basic statistics:
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">{chatData.totalMessages}</div>
+                <div className="text-gray-600 dark:text-gray-400">Total Messages</div>
+              </div>
+              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+                <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">{chatData.participants.length}</div>
+                <div className="text-gray-600 dark:text-gray-400">Participants</div>
+              </div>
+              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+                <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
+                  {Math.ceil((chatData.dateRange.end.getTime() - chatData.dateRange.start.getTime()) / (1000 * 60 * 60 * 24))}
+                </div>
+                <div className="text-gray-600 dark:text-gray-400">Days Active</div>
+              </div>
+            </div>
+            <div className="mt-8">
+              <a href="/" className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                Back to Chat
+              </a>
+            </div>
+          </div>
+        ) : (
+          <AnalyticsDashboard messages={filteredMessages} participants={chatData.participants} />
+        )}
       </div>
     </div>
   );
