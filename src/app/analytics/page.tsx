@@ -158,8 +158,7 @@ export default function AnalyticsOverviewPage() {
                 console.log('=== DEBUG STORAGE ===');
                 const data = await chatStorage.getChatData();
                 console.log('Raw storage data:', data);
-                console.log('localStorage keys:', Object.keys(localStorage));
-                console.log('localStorage chatData:', localStorage.getItem('chatData'));
+                console.log('IndexedDB data structure:', data ? Object.keys(data) : 'No data');
               }}
               className="px-8 py-4 bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold rounded-xl hover:from-red-600 hover:to-orange-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
@@ -207,7 +206,7 @@ export default function AnalyticsOverviewPage() {
               console.log('=== DEBUG FALLBACK DATA ===');
               console.log('chatData:', chatData);
               const storageData = await chatStorage.getChatData();
-              console.log('Storage data:', storageData);
+              console.log('IndexedDB storage data:', storageData);
             }}
             className="mt-4 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors"
           >

@@ -89,18 +89,6 @@ export default function Home() {
                   📊 Analytics
                 </a>
               )}
-              {chatData && (
-                <button 
-                  onClick={() => {
-                    console.log('Manual check from main page - chatData:', chatData);
-                    console.log('Manual check from main page - localStorage:', localStorage.getItem('chatData'));
-                    console.log('Manual check from main page - All keys:', Object.keys(localStorage));
-                  }}
-                  className="text-sm text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 px-3 py-1 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors"
-                >
-                  Debug Storage
-                </button>
-              )}
               <a
                 href="https://github.com/stevie1mat/ChatVault"
                 target="_blank"
