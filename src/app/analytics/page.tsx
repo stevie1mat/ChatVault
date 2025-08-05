@@ -146,18 +146,23 @@ export default function AnalyticsOverviewPage() {
   }
 
   if (chatData.messages.length === 0) {
+    // Enhanced view for minimal data (when chat was too large)
+    const daysActive = Math.ceil((chatData.dateRange.end.getTime() - chatData.dateRange.start.getTime()) / (1000 * 60 * 60 * 24));
+    const averageMessagesPerDay = Math.round(chatData.totalMessages / daysActive);
+    
     return (
       <div className="space-y-8">
         <div className="text-center space-y-6">
           <h2 className="text-4xl font-bold text-gray-900 dark:text-white">Analytics Overview</h2>
           <p className="text-lg text-gray-600 dark:text-gray-400">
-            Chat data was too large for full analytics. Here are the basic statistics:
+            Chat data was too large for detailed analytics. Here are the enhanced basic statistics:
           </p>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+
+        {/* Enhanced Key Metrics Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
-            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">{chatData.totalMessages}</div>
+            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">{chatData.totalMessages.toLocaleString()}</div>
             <div className="text-gray-600 dark:text-gray-400">Total Messages</div>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
@@ -165,10 +170,81 @@ export default function AnalyticsOverviewPage() {
             <div className="text-gray-600 dark:text-gray-400">Participants</div>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
-            <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
-              {Math.ceil((chatData.dateRange.end.getTime() - chatData.dateRange.start.getTime()) / (1000 * 60 * 60 * 24))}
-            </div>
+            <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">{daysActive}</div>
             <div className="text-gray-600 dark:text-gray-400">Days Active</div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+            <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">{averageMessagesPerDay}</div>
+            <div className="text-gray-600 dark:text-gray-400">Avg/Day</div>
+          </div>
+        </div>
+
+        {/* Enhanced Statistics */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Chat Statistics</h3>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 dark:text-gray-400">Chat Duration</span>
+                <span className="text-lg font-semibold text-blue-600 dark:text-blue-400">{daysActive} days</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 dark:text-gray-400">Date Range</span>
+                <span className="text-lg font-semibold text-green-600 dark:text-green-400">
+                  {chatData.dateRange.start.toLocaleDateString()} - {chatData.dateRange.end.toLocaleDateString()}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 dark:text-gray-400">Average Messages/Day</span>
+                <span className="text-lg font-semibold text-purple-600 dark:text-purple-400">{averageMessagesPerDay}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 dark:text-gray-400">Total Participants</span>
+                <span className="text-lg font-semibold text-orange-600 dark:text-orange-400">{chatData.participants.length}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Participant Information</h3>
+            <div className="space-y-4">
+              {chatData.participants.map((participant, index) => (
+                <div key={participant} className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-400">{participant}</span>
+                  <span className="text-lg font-semibold text-blue-600 dark:text-blue-400">#{index + 1}</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+              <div className="text-sm text-blue-600 dark:text-blue-400">
+                <strong>Note:</strong> Detailed analytics require full message data. For comprehensive insights, try uploading a smaller chat file or use the main chat view for searching and filtering.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Activity Insights */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Activity Insights</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+                {Math.round(chatData.totalMessages / daysActive)}
+              </div>
+              <div className="text-gray-600 dark:text-gray-400">Messages per Day</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-2">
+                {Math.round((chatData.totalMessages / daysActive) / 24)}
+              </div>
+              <div className="text-gray-600 dark:text-gray-400">Messages per Hour</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-2">
+                {Math.round(chatData.totalMessages / chatData.participants.length)}
+              </div>
+              <div className="text-gray-600 dark:text-gray-400">Messages per Participant</div>
+            </div>
           </div>
         </div>
 
