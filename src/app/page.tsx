@@ -6,7 +6,6 @@ import { filterMessages } from '@/utils/chatParser';
 import FileUpload from '@/components/FileUpload';
 import SearchFilters from '@/components/SearchFilters';
 import ChatView from '@/components/ChatView';
-import AnalyticsDashboard from '@/components/AnalyticsDashboard';
 import ExportButtons from '@/components/ExportButtons';
 import ThemeToggle from '@/components/ThemeToggle';
 
@@ -20,7 +19,6 @@ export default function Home() {
     sender: null
   });
   const [showHowToDialog, setShowHowToDialog] = useState(false);
-  const [showAnalytics, setShowAnalytics] = useState(false);
 
   const filteredMessages = useMemo(() => {
     if (!chatData) return [];
@@ -29,14 +27,10 @@ export default function Home() {
 
   const handleChatParsed = useCallback((data: ParsedChatData) => {
     setChatData(data);
-    // Reset filters when new chat is loaded
-    setFilters({
-      keyword: '',
-      startDate: null,
-      endDate: null,
-      timeRange: null,
-      sender: null
-    });
+    // Store chat data in localStorage for analytics page
+    console.log('Storing chat data:', data);
+    localStorage.setItem('chatData', JSON.stringify(data));
+    console.log('Stored in localStorage:', localStorage.getItem('chatData'));
   }, []);
 
   const handleFiltersChange = useCallback((newFilters: SearchFiltersType) => {
@@ -64,16 +58,9 @@ export default function Home() {
                 </button>
               )}
               {chatData && (
-                <button
-                  onClick={() => setShowAnalytics(!showAnalytics)}
-                  className={`text-sm px-3 py-1 rounded-lg transition-colors ${
-                    showAnalytics
-                      ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300'
-                      : 'text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
-                >
+                <a href="/analytics" className="text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 px-3 py-1 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors">
                   📊 Analytics
-                </button>
+                </a>
               )}
               <a
                 href="https://github.com/stevie1mat/ChatVault"
@@ -215,12 +202,12 @@ export default function Home() {
                       <div className="flex items-center space-x-4">
                         <div>
                           <h4 className="text-xl font-semibold text-gray-900 dark:text-white">
-                            {showAnalytics ? 'Analytics' : 'Messages'}
+                            Messages
                           </h4>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {showAnalytics ? 'Chat insights and statistics' : `${filteredMessages.length} messages found`}
+                            {filteredMessages.length} messages found
                           </p>
-                          {!showAnalytics && chatData && (
+                          {chatData && (
                             <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                               {chatData.dateRange.start.toLocaleDateString()} - {chatData.dateRange.end.toLocaleDateString()}
                             </p>
@@ -228,7 +215,7 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="flex items-center space-x-3">
-                        {!showAnalytics && (
+                        {chatData && (
                           <>
                             <button
                               onClick={() => handleFiltersChange({ ...filters, sender: null })}
@@ -255,29 +242,13 @@ export default function Home() {
                             ))}
                           </>
                         )}
-                        <button
-                          onClick={() => setShowAnalytics(!showAnalytics)}
-                          className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                            showAnalytics
-                              ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/25'
-                              : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
-                          }`}
-                        >
-                          {showAnalytics ? '📱 Messages' : '📊 Analytics'}
-                        </button>
                       </div>
                     </div>
                   </div>
 
                   {/* Content */}
                   <div className="flex-1 overflow-hidden">
-                    {showAnalytics ? (
-                      <div className="h-full overflow-y-auto">
-                        <AnalyticsDashboard messages={filteredMessages} participants={chatData.participants} />
-                      </div>
-                    ) : (
-                      <ChatView messages={filteredMessages} />
-                    )}
+                    <ChatView messages={filteredMessages} />
                   </div>
                 </div>
               </div>
