@@ -303,7 +303,8 @@ export async function analyzeSentimentWithMistral(messages: ChatMessage[]): Prom
 Chat messages:
 ${messageTexts}
 
-Return your analysis as a JSON object with this structure:
+IMPORTANT: Return ONLY a valid JSON object with this exact structure. Do not include any explanatory text before or after the JSON:
+
 {
   "overallSentiment": "positive/negative/neutral/mixed",
   "sentimentScore": 7.5,
@@ -364,7 +365,20 @@ Return your analysis as a JSON object with this structure:
     console.log('Mistral API response:', data);
     
     const aiResponse = data.choices[0].message.content;
-    const jsonResponse = aiResponse.replace(/```json\n?|\n?```/g, '');
+    console.log('Raw AI response:', aiResponse);
+    
+    // Try to extract JSON from the response
+    let jsonResponse = aiResponse;
+    
+    // Remove markdown code blocks
+    jsonResponse = jsonResponse.replace(/```json\n?|\n?```/g, '');
+    jsonResponse = jsonResponse.replace(/```\n?|\n?```/g, '');
+    
+    // Try to find JSON object in the response
+    const jsonMatch = jsonResponse.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      jsonResponse = jsonMatch[0];
+    }
     
     try {
       const results = JSON.parse(jsonResponse);
@@ -372,7 +386,19 @@ Return your analysis as a JSON object with this structure:
       return results;
     } catch (parseError) {
       console.error('Failed to parse sentiment response:', parseError);
-      throw new Error('Failed to parse AI response');
+      console.error('Attempted to parse:', jsonResponse);
+      
+      // Return a fallback response with the raw AI response
+      return {
+        error: 'Failed to parse AI response',
+        rawResponse: aiResponse,
+        overallSentiment: 'mixed',
+        sentimentScore: 0,
+        emotionalTone: 'neutral',
+        participantSentiments: [],
+        conversationPhases: [],
+        emotionalHighlights: []
+      };
     }
   } catch (error) {
     console.error('Sentiment analysis error:', error);
@@ -419,7 +445,8 @@ export async function analyzeTopicsWithMistral(messages: ChatMessage[]): Promise
 Chat messages:
 ${messageTexts}
 
-Return your analysis as a JSON object with this structure:
+IMPORTANT: Return ONLY a valid JSON object with this exact structure. Do not include any explanatory text before or after the JSON:
+
 {
   "mainTopics": [
     {
@@ -491,7 +518,20 @@ Return your analysis as a JSON object with this structure:
     console.log('Mistral API response:', data);
     
     const aiResponse = data.choices[0].message.content;
-    const jsonResponse = aiResponse.replace(/```json\n?|\n?```/g, '');
+    console.log('Raw AI response:', aiResponse);
+    
+    // Try to extract JSON from the response
+    let jsonResponse = aiResponse;
+    
+    // Remove markdown code blocks
+    jsonResponse = jsonResponse.replace(/```json\n?|\n?```/g, '');
+    jsonResponse = jsonResponse.replace(/```\n?|\n?```/g, '');
+    
+    // Try to find JSON object in the response
+    const jsonMatch = jsonResponse.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      jsonResponse = jsonMatch[0];
+    }
     
     try {
       const results = JSON.parse(jsonResponse);
@@ -499,7 +539,17 @@ Return your analysis as a JSON object with this structure:
       return results;
     } catch (parseError) {
       console.error('Failed to parse topic response:', parseError);
-      throw new Error('Failed to parse AI response');
+      console.error('Attempted to parse:', jsonResponse);
+      
+      // Return a fallback response with the raw AI response
+      return {
+        error: 'Failed to parse AI response',
+        rawResponse: aiResponse,
+        mainTopics: [],
+        conversationThemes: [],
+        topicEvolution: [],
+        participantTopicPreferences: []
+      };
     }
   } catch (error) {
     console.error('Topic analysis error:', error);
@@ -546,7 +596,8 @@ export async function analyzePatternsWithMistral(messages: ChatMessage[]): Promi
 Chat messages:
 ${messageTexts}
 
-Return your analysis as a JSON object with this structure:
+IMPORTANT: Return ONLY a valid JSON object with this exact structure. Do not include any explanatory text before or after the JSON:
+
 {
   "conversationInitiators": [
     {
@@ -622,7 +673,20 @@ Return your analysis as a JSON object with this structure:
     console.log('Mistral API response:', data);
     
     const aiResponse = data.choices[0].message.content;
-    const jsonResponse = aiResponse.replace(/```json\n?|\n?```/g, '');
+    console.log('Raw AI response:', aiResponse);
+    
+    // Try to extract JSON from the response
+    let jsonResponse = aiResponse;
+    
+    // Remove markdown code blocks
+    jsonResponse = jsonResponse.replace(/```json\n?|\n?```/g, '');
+    jsonResponse = jsonResponse.replace(/```\n?|\n?```/g, '');
+    
+    // Try to find JSON object in the response
+    const jsonMatch = jsonResponse.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      jsonResponse = jsonMatch[0];
+    }
     
     try {
       const results = JSON.parse(jsonResponse);
@@ -630,7 +694,18 @@ Return your analysis as a JSON object with this structure:
       return results;
     } catch (parseError) {
       console.error('Failed to parse pattern response:', parseError);
-      throw new Error('Failed to parse AI response');
+      console.error('Attempted to parse:', jsonResponse);
+      
+      // Return a fallback response with the raw AI response
+      return {
+        error: 'Failed to parse AI response',
+        rawResponse: aiResponse,
+        conversationInitiators: [],
+        conversationFlow: [],
+        communicationStyles: [],
+        interactionPatterns: [],
+        conversationDynamics: {}
+      };
     }
   } catch (error) {
     console.error('Pattern analysis error:', error);
@@ -677,7 +752,8 @@ export async function analyzeResponseTimesWithMistral(messages: ChatMessage[]): 
 Chat messages:
 ${messageTexts}
 
-Return your analysis as a JSON object with this structure:
+IMPORTANT: Return ONLY a valid JSON object with this exact structure. Do not include any explanatory text before or after the JSON:
+
 {
   "overallStats": {
     "averageResponseTime": 15.5,
@@ -758,7 +834,20 @@ Return your analysis as a JSON object with this structure:
     console.log('Mistral API response:', data);
     
     const aiResponse = data.choices[0].message.content;
-    const jsonResponse = aiResponse.replace(/```json\n?|\n?```/g, '');
+    console.log('Raw AI response:', aiResponse);
+    
+    // Try to extract JSON from the response
+    let jsonResponse = aiResponse;
+    
+    // Remove markdown code blocks
+    jsonResponse = jsonResponse.replace(/```json\n?|\n?```/g, '');
+    jsonResponse = jsonResponse.replace(/```\n?|\n?```/g, '');
+    
+    // Try to find JSON object in the response
+    const jsonMatch = jsonResponse.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      jsonResponse = jsonMatch[0];
+    }
     
     try {
       const results = JSON.parse(jsonResponse);
@@ -766,7 +855,18 @@ Return your analysis as a JSON object with this structure:
       return results;
     } catch (parseError) {
       console.error('Failed to parse response time response:', parseError);
-      throw new Error('Failed to parse AI response');
+      console.error('Attempted to parse:', jsonResponse);
+      
+      // Return a fallback response with the raw AI response
+      return {
+        error: 'Failed to parse AI response',
+        rawResponse: aiResponse,
+        overallStats: {},
+        participantResponseTimes: [],
+        responseTimeTrends: [],
+        conversationPairs: [],
+        responseTimeInsights: []
+      };
     }
   } catch (error) {
     console.error('Response time analysis error:', error);
