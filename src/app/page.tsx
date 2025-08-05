@@ -229,6 +229,81 @@ export default function Home() {
                 <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
               </svg>
             </div>
+
+            {/* Additional Floating Widgets */}
+            {/* Message Count Badge */}
+            <div className="absolute top-8 right-8 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-full px-3 py-1 text-xs font-bold shadow-lg z-30">
+              12 new
+            </div>
+
+            {/* Typing Indicator */}
+            <div className="absolute bottom-20 left-8 bg-white rounded-full shadow-lg p-3 z-30">
+              <div className="flex space-x-1">
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+              </div>
+            </div>
+
+            {/* Quick Action Button */}
+            <div className="absolute bottom-8 left-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full p-3 shadow-lg z-30 hover:scale-110 transition-transform duration-200">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+              </svg>
+            </div>
+
+            {/* Notification Badge */}
+            <div className="absolute top-12 left-12 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full px-2 py-1 text-xs font-bold shadow-lg z-30">
+              📢
+            </div>
+
+            {/* Status Indicator */}
+            <div className="absolute top-16 right-16 bg-gradient-to-r from-green-400 to-green-500 text-white rounded-full p-2 shadow-lg z-30">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+            </div>
+
+            {/* Mini Chart */}
+            <div className="absolute bottom-12 right-12 bg-white rounded-xl shadow-lg p-3 z-30">
+              <div className="text-xs text-gray-600 mb-2">Activity</div>
+              <div className="flex items-end space-x-1 h-8">
+                <div className="w-1 bg-blue-400 rounded-t h-3"></div>
+                <div className="w-1 bg-blue-500 rounded-t h-5"></div>
+                <div className="w-1 bg-blue-600 rounded-t h-7"></div>
+                <div className="w-1 bg-blue-400 rounded-t h-4"></div>
+                <div className="w-1 bg-blue-500 rounded-t h-6"></div>
+              </div>
+            </div>
+
+            {/* Search Highlight */}
+            <div className="absolute top-20 left-20 bg-gradient-to-r from-purple-400 to-pink-400 text-white rounded-lg px-3 py-1 text-xs font-medium shadow-lg z-30">
+              "meeting" found
+            </div>
+
+            {/* Time Stamp */}
+            <div className="absolute bottom-16 left-16 bg-white rounded-lg shadow-lg px-3 py-2 z-30">
+              <div className="text-xs text-gray-500">Last active</div>
+              <div className="text-xs font-medium text-gray-700">2 min ago</div>
+            </div>
+
+            {/* Connection Status */}
+            <div className="absolute top-24 right-8 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full px-3 py-1 text-xs font-medium shadow-lg z-30">
+              <div className="flex items-center space-x-1">
+                <div className="w-2 h-2 bg-green-300 rounded-full"></div>
+                <span>Connected</span>
+              </div>
+            </div>
+
+            {/* File Upload Indicator */}
+            <div className="absolute bottom-24 right-8 bg-gradient-to-r from-teal-500 to-cyan-500 text-white rounded-lg px-3 py-2 z-30">
+              <div className="flex items-center space-x-2">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                </svg>
+                <span className="text-xs">Uploading...</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
