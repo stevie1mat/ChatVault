@@ -15,11 +15,9 @@ export default function Home() {
             <div className="flex items-center space-x-8">
               <h1 className="text-xl font-semibold text-gray-900">WhatsApp Chat Analyzer</h1>
               <nav className="hidden md:flex items-center space-x-6">
-                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">Solutions</a>
-                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">Products</a>
                 <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">Features</a>
+                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">How it Works</a>
                 <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">Pricing</a>
-                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">Resources</a>
               </nav>
             </div>
             <div className="flex items-center space-x-4">
@@ -29,11 +27,8 @@ export default function Home() {
               >
                 How to?
               </button>
-              <button className="text-gray-600 hover:text-gray-900 transition-colors px-4 py-2 rounded-lg hover:bg-gray-50">
-                Try Analyzer
-              </button>
               <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
-                Sign in
+                Get Started
               </button>
               <ThemeToggle />
             </div>
