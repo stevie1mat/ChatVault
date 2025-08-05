@@ -229,84 +229,243 @@ export default function Home() {
                 <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
               </svg>
             </div>
+          </div>
+        </div>
+      </div>
 
-            {/* Additional Floating Widgets */}
-            {/* Message Count Badge */}
-            <div className="absolute top-8 right-8 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-full px-3 py-1 text-xs font-bold shadow-lg z-30">
-              12 new
-            </div>
-
-            {/* Typing Indicator */}
-            <div className="absolute bottom-20 left-8 bg-white rounded-full shadow-lg p-3 z-30">
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-              </div>
-            </div>
-
-            {/* Quick Action Button */}
-            <div className="absolute bottom-8 left-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full p-3 shadow-lg z-30 hover:scale-110 transition-transform duration-200">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-              </svg>
-            </div>
-
-            {/* Notification Badge */}
-            <div className="absolute top-12 left-12 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full px-2 py-1 text-xs font-bold shadow-lg z-30">
-              📢
-            </div>
-
-            {/* Status Indicator */}
-            <div className="absolute top-16 right-16 bg-gradient-to-r from-green-400 to-green-500 text-white rounded-full p-2 shadow-lg z-30">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
-            </div>
-
-            {/* Mini Chart */}
-            <div className="absolute bottom-12 right-12 bg-white rounded-xl shadow-lg p-3 z-30">
-              <div className="text-xs text-gray-600 mb-2">Activity</div>
-              <div className="flex items-end space-x-1 h-8">
-                <div className="w-1 bg-blue-400 rounded-t h-3"></div>
-                <div className="w-1 bg-blue-500 rounded-t h-5"></div>
-                <div className="w-1 bg-blue-600 rounded-t h-7"></div>
-                <div className="w-1 bg-blue-400 rounded-t h-4"></div>
-                <div className="w-1 bg-blue-500 rounded-t h-6"></div>
-              </div>
-            </div>
-
-            {/* Search Highlight */}
-            <div className="absolute top-20 left-20 bg-gradient-to-r from-purple-400 to-pink-400 text-white rounded-lg px-3 py-1 text-xs font-medium shadow-lg z-30">
-              "meeting" found
-            </div>
-
-            {/* Time Stamp */}
-            <div className="absolute bottom-16 left-16 bg-white rounded-lg shadow-lg px-3 py-2 z-30">
-              <div className="text-xs text-gray-500">Last active</div>
-              <div className="text-xs font-medium text-gray-700">2 min ago</div>
-            </div>
-
-            {/* Connection Status */}
-            <div className="absolute top-24 right-8 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full px-3 py-1 text-xs font-medium shadow-lg z-30">
-              <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-green-300 rounded-full"></div>
-                <span>Connected</span>
-              </div>
-            </div>
-
-            {/* File Upload Indicator */}
-            <div className="absolute bottom-24 right-8 bg-gradient-to-r from-teal-500 to-cyan-500 text-white rounded-lg px-3 py-2 z-30">
-              <div className="flex items-center space-x-2">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
+      {/* Features Section */}
+      <div className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              Powerful Features for Chat Analysis
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Discover advanced tools to explore, search, and analyze your WhatsApp conversations with precision and ease.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 hover:shadow-2xl transition-shadow duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
                 </svg>
-                <span className="text-xs">Uploading...</span>
               </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Smart Search</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Find any message instantly with real-time keyword search, date filtering, and participant-based queries.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 hover:shadow-2xl transition-shadow duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Analytics Dashboard</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Get detailed insights into chat patterns, participant activity, and conversation trends with beautiful charts.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 hover:shadow-2xl transition-shadow duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Advanced Filtering</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Filter by date ranges, time periods, specific participants, and message content with precision.
+              </p>
             </div>
           </div>
         </div>
       </div>
+
+      {/* How It Works Section */}
+      <div className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              How It Works
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Get started with WhatsApp Chat Analyzer in just a few simple steps
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-2xl font-bold">
+                1
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Export Your Chat</h3>
+              <p className="text-gray-600">
+                Export your WhatsApp chat without media from the WhatsApp app
+              </p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-2xl font-bold">
+                2
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Upload & Process</h3>
+              <p className="text-gray-600">
+                Upload the exported file and let our system process your conversations
+              </p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-2xl font-bold">
+                3
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Analyze & Explore</h3>
+              <p className="text-gray-600">
+                Search, filter, and analyze your chat data with powerful tools
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Testimonials Section */}
+      <div className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              What Users Say
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Join thousands of users who trust WhatsApp Chat Analyzer for their conversation insights
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
+              <div className="flex items-center mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                  S
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900">Sarah Chen</h4>
+                  <p className="text-sm text-gray-500">Product Manager</p>
+                </div>
+              </div>
+              <p className="text-gray-600 leading-relaxed">
+                "This tool helped me analyze team communication patterns and improve our collaboration. The search features are incredibly powerful!"
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
+              <div className="flex items-center mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                  M
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900">Mike Rodriguez</h4>
+                  <p className="text-sm text-gray-500">Data Analyst</p>
+                </div>
+              </div>
+              <p className="text-gray-600 leading-relaxed">
+                "The analytics dashboard provides amazing insights. I can track engagement patterns and identify key conversation trends easily."
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
+              <div className="flex items-center mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                  A
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900">Alex Thompson</h4>
+                  <p className="text-sm text-gray-500">Research Lead</p>
+                </div>
+              </div>
+              <p className="text-gray-600 leading-relaxed">
+                "Perfect for research projects! The filtering capabilities help me find specific conversations quickly and efficiently."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <div className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-500 to-purple-600">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
+            Ready to Analyze Your Chats?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            Start exploring your WhatsApp conversations with powerful search, filtering, and analytics tools.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button className="bg-white text-blue-600 px-8 py-4 rounded-xl font-bold hover:bg-gray-50 transition-colors">
+              Get Started Now
+            </button>
+            <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-bold hover:bg-white hover:text-blue-600 transition-colors">
+              Learn More
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="col-span-1 md:col-span-2">
+              <h3 className="text-2xl font-bold mb-4">WhatsApp Chat Analyzer</h3>
+              <p className="text-gray-400 mb-6 max-w-md">
+                Powerful tools to search, filter, and analyze your WhatsApp conversations with precision and ease.
+              </p>
+              <div className="flex space-x-4">
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                  </svg>
+                </a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/>
+                  </svg>
+                </a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Product</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">API</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Support</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 WhatsApp Chat Analyzer. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
 
       {/* How to Dialog */}
       {showHowToDialog && (
