@@ -15,10 +15,12 @@ export default function AnalyticsOverviewPage() {
     timeRange: null,
     sender: null
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   // Get chat data from storage
   useEffect(() => {
     const loadChatData = async () => {
+      setIsLoading(true);
       try {
         const storedData = await chatStorage.getChatData();
         console.log('Loaded chat data:', storedData);
@@ -55,6 +57,8 @@ export default function AnalyticsOverviewPage() {
         }
       } catch (error) {
         console.error('Error loading chat data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -138,6 +142,40 @@ export default function AnalyticsOverviewPage() {
       dailyActivity
     };
   }, [chatData]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-8">
+          <div className="space-y-6">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white">Analytics Dashboard</h2>
+            <div className="flex items-center justify-center space-x-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <p className="text-xl text-gray-600 dark:text-gray-400">
+                Loading chat data from storage...
+              </p>
+            </div>
+          </div>
+          <div className="flex justify-center space-x-4">
+            <a href="/" className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+              Upload Chat File
+            </a>
+            <button 
+              onClick={async () => {
+                console.log('=== DEBUG STORAGE ===');
+                const data = await chatStorage.getChatData();
+                console.log('Raw storage data:', data);
+                console.log('IndexedDB data structure:', data ? Object.keys(data) : 'No data');
+              }}
+              className="px-8 py-4 bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold rounded-xl hover:from-red-600 hover:to-orange-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              Debug Storage
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!chatData) {
     return (
