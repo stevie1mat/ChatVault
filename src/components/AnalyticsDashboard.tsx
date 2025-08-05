@@ -15,11 +15,23 @@ interface AnalyticsData {
   mostActiveHour: { hour: number; count: number };
   mostActiveDay: { day: string; count: number };
   mostActiveDate: { date: string; count: number };
+  responseTimeStats: {
+    averageResponseTime: number; // in minutes
+    fastestResponse: number;
+    slowestResponse: number;
+    responseTimeDistribution: {
+      immediate: number; // 0-1 minute
+      quick: number; // 1-5 minutes
+      normal: number; // 5-30 minutes
+      slow: number; // 30+ minutes
+    };
+  };
   specialOccasions: {
     wishes: { count: number; messages: string[] };
     congratulations: { count: number; messages: string[] };
     festivals: { count: number; messages: string[] };
     specialDays: { count: number; messages: string[] };
+    birthdays: { count: number; messages: string[] };
   };
   participantStats: Array<{
     name: string;
@@ -59,11 +71,23 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
         mostActiveHour: { hour: 0, count: 0 },
         mostActiveDay: { day: '', count: 0 },
         mostActiveDate: { date: '', count: 0 },
+        responseTimeStats: {
+          averageResponseTime: 0,
+          fastestResponse: 0,
+          slowestResponse: 0,
+          responseTimeDistribution: {
+            immediate: 0,
+            quick: 0,
+            normal: 0,
+            slow: 0,
+          },
+        },
         specialOccasions: {
           wishes: { count: 0, messages: [] },
           congratulations: { count: 0, messages: [] },
           festivals: { count: 0, messages: [] },
           specialDays: { count: 0, messages: [] },
+          birthdays: { count: 0, messages: [] },
         },
         participantStats: [],
         hourlyActivity: [],
@@ -131,6 +155,51 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
       count > max.count ? { date, count } : max, { date: '', count: 0 }
     );
 
+    // Calculate response time statistics
+    const responseTimes: number[] = [];
+    const responseTimeDistribution = {
+      immediate: 0, // 0-1 minute
+      quick: 0, // 1-5 minutes
+      normal: 0, // 5-30 minutes
+      slow: 0, // 30+ minutes
+    };
+
+    // Calculate time differences between consecutive messages
+    for (let i = 1; i < messages.length; i++) {
+      const currentMessage = messages[i];
+      const previousMessage = messages[i - 1];
+      
+      // Only calculate if messages are from different senders (actual responses)
+      if (currentMessage.sender !== previousMessage.sender) {
+        const timeDiff = currentMessage.timestamp.getTime() - previousMessage.timestamp.getTime();
+        const minutesDiff = timeDiff / (1000 * 60); // Convert to minutes
+        
+        if (minutesDiff > 0 && minutesDiff < 1440) { // Only count responses within 24 hours
+          responseTimes.push(minutesDiff);
+          
+          // Categorize response time
+          if (minutesDiff <= 1) {
+            responseTimeDistribution.immediate++;
+          } else if (minutesDiff <= 5) {
+            responseTimeDistribution.quick++;
+          } else if (minutesDiff <= 30) {
+            responseTimeDistribution.normal++;
+          } else {
+            responseTimeDistribution.slow++;
+          }
+        }
+      }
+    }
+
+    const responseTimeStats = {
+      averageResponseTime: responseTimes.length > 0 
+        ? Math.round(responseTimes.reduce((sum, time) => sum + time, 0) / responseTimes.length)
+        : 0,
+      fastestResponse: responseTimes.length > 0 ? Math.min(...responseTimes) : 0,
+      slowestResponse: responseTimes.length > 0 ? Math.max(...responseTimes) : 0,
+      responseTimeDistribution
+    };
+
     // Calculate participant stats efficiently
     const participantStats = participants.map(name => {
       const messageCount = participantCounts.get(name) || 0;
@@ -180,10 +249,19 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
       'first day', 'last day', 'farewell', 'welcome', 'goodbye', 'hello'
     ];
 
+    const birthdayKeywords = [
+      'happy birthday', 'birthday', 'birth day', 'bday', 'b-day', 'happy bday',
+      'birthday wishes', 'birthday celebration', 'birthday party', 'birthday cake',
+      'many happy returns', 'happy returns', 'birthday boy', 'birthday girl',
+      'birthday person', 'birthday buddy', 'birthday mate', 'birthday friend',
+      '🎂', '🎉', '🎊', '🎈', '🎁', '🍰', '🎂', '🎉', '🎊'
+    ];
+
     const wishesMessages: string[] = [];
     const congratulationsMessages: string[] = [];
     const festivalsMessages: string[] = [];
     const specialDaysMessages: string[] = [];
+    const birthdayMessages: string[] = [];
 
     // Analyze messages for special occasions
     messages.forEach(msg => {
@@ -208,13 +286,19 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
       if (specialDayKeywords.some(keyword => content.includes(keyword))) {
         specialDaysMessages.push(msg.content);
       }
+
+      // Check for birthdays
+      if (birthdayKeywords.some(keyword => content.includes(keyword))) {
+        birthdayMessages.push(msg.content);
+      }
     });
 
     const specialOccasions = {
-      wishes: { count: wishesMessages.length, messages: wishesMessages.slice(0, 10) }, // Show first 10
-      congratulations: { count: congratulationsMessages.length, messages: congratulationsMessages.slice(0, 10) },
-      festivals: { count: festivalsMessages.length, messages: festivalsMessages.slice(0, 10) },
-      specialDays: { count: specialDaysMessages.length, messages: specialDaysMessages.slice(0, 10) }
+      wishes: { count: wishesMessages.length, messages: wishesMessages },
+      congratulations: { count: congratulationsMessages.length, messages: congratulationsMessages },
+      festivals: { count: festivalsMessages.length, messages: festivalsMessages },
+      specialDays: { count: specialDaysMessages.length, messages: specialDaysMessages },
+      birthdays: { count: birthdayMessages.length, messages: birthdayMessages },
     };
 
     return {
@@ -224,6 +308,7 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
       mostActiveHour,
       mostActiveDay,
       mostActiveDate,
+      responseTimeStats,
       specialOccasions,
       participantStats,
       hourlyActivity: hourlyCounts.map((count, hour) => ({ hour, count })),
@@ -373,10 +458,88 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
           </div>
         </div>
 
+        {/* Response Time Analysis */}
+        <div className="space-y-4">
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Response Time Analysis</h4>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-100 dark:border-blue-800/30">
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{analytics.responseTimeStats.averageResponseTime}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Avg Response (min)</div>
+            </div>
+            <div className="text-center p-4 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-100 dark:border-green-800/30">
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">{analytics.responseTimeStats.fastestResponse.toFixed(1)}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Fastest (min)</div>
+            </div>
+            <div className="text-center p-4 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-xl border border-orange-100 dark:border-orange-800/30">
+              <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{analytics.responseTimeStats.slowestResponse.toFixed(1)}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Slowest (min)</div>
+            </div>
+            <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl border border-purple-100 dark:border-purple-800/30">
+              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{analytics.responseTimeStats.responseTimeDistribution.immediate}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Immediate (≤1min)</div>
+            </div>
+          </div>
+          
+          {/* Response Time Distribution */}
+          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+            <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Response Time Distribution</h5>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Immediate (≤1 min)</span>
+                <div className="flex items-center space-x-2">
+                  <div className="w-32 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                    <div 
+                      className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${(analytics.responseTimeStats.responseTimeDistribution.immediate / (analytics.responseTimeStats.responseTimeDistribution.immediate + analytics.responseTimeStats.responseTimeDistribution.quick + analytics.responseTimeStats.responseTimeDistribution.normal + analytics.responseTimeStats.responseTimeDistribution.slow)) * 100}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">{analytics.responseTimeStats.responseTimeDistribution.immediate}</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Quick (1-5 min)</span>
+                <div className="flex items-center space-x-2">
+                  <div className="w-32 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                    <div 
+                      className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${(analytics.responseTimeStats.responseTimeDistribution.quick / (analytics.responseTimeStats.responseTimeDistribution.immediate + analytics.responseTimeStats.responseTimeDistribution.quick + analytics.responseTimeStats.responseTimeDistribution.normal + analytics.responseTimeStats.responseTimeDistribution.slow)) * 100}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">{analytics.responseTimeStats.responseTimeDistribution.quick}</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Normal (5-30 min)</span>
+                <div className="flex items-center space-x-2">
+                  <div className="w-32 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                    <div 
+                      className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${(analytics.responseTimeStats.responseTimeDistribution.normal / (analytics.responseTimeStats.responseTimeDistribution.immediate + analytics.responseTimeStats.responseTimeDistribution.quick + analytics.responseTimeStats.responseTimeDistribution.normal + analytics.responseTimeStats.responseTimeDistribution.slow)) * 100}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">{analytics.responseTimeStats.responseTimeDistribution.normal}</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Slow (30+ min)</span>
+                <div className="flex items-center space-x-2">
+                  <div className="w-32 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                    <div 
+                      className="bg-red-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${(analytics.responseTimeStats.responseTimeDistribution.slow / (analytics.responseTimeStats.responseTimeDistribution.immediate + analytics.responseTimeStats.responseTimeDistribution.quick + analytics.responseTimeStats.responseTimeDistribution.normal + analytics.responseTimeStats.responseTimeDistribution.slow)) * 100}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">{analytics.responseTimeStats.responseTimeDistribution.slow}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Special Occasions */}
         <div className="space-y-6">
           <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Special Occasions</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
             {/* Wishes */}
             <button
               onClick={() => handleCategoryClick('Wishes', analytics.specialOccasions.wishes.messages)}
@@ -387,7 +550,7 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
               <div className="text-sm text-gray-600 dark:text-gray-400">Wishes</div>
               {analytics.specialOccasions.wishes.messages.length > 0 && (
                 <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
-                  "{analytics.specialOccasions.wishes.messages[0].substring(0, 30)}..."
+                  "{analytics.specialOccasions.wishes.messages[0].substring(0, 50)}..."
                 </div>
               )}
             </button>
@@ -402,7 +565,7 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
               <div className="text-sm text-gray-600 dark:text-gray-400">Congratulations</div>
               {analytics.specialOccasions.congratulations.messages.length > 0 && (
                 <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
-                  "{analytics.specialOccasions.congratulations.messages[0].substring(0, 30)}..."
+                  "{analytics.specialOccasions.congratulations.messages[0].substring(0, 50)}..."
                 </div>
               )}
             </button>
@@ -417,7 +580,7 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
               <div className="text-sm text-gray-600 dark:text-gray-400">Festivals</div>
               {analytics.specialOccasions.festivals.messages.length > 0 && (
                 <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
-                  "{analytics.specialOccasions.festivals.messages[0].substring(0, 30)}..."
+                  "{analytics.specialOccasions.festivals.messages[0].substring(0, 50)}..."
                 </div>
               )}
             </button>
@@ -432,7 +595,22 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
               <div className="text-sm text-gray-600 dark:text-gray-400">Special Days</div>
               {analytics.specialOccasions.specialDays.messages.length > 0 && (
                 <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
-                  "{analytics.specialOccasions.specialDays.messages[0].substring(0, 30)}..."
+                  "{analytics.specialOccasions.specialDays.messages[0].substring(0, 50)}..."
+                </div>
+              )}
+            </button>
+
+            {/* Birthdays */}
+            <button
+              onClick={() => handleCategoryClick('Birthdays', analytics.specialOccasions.birthdays.messages)}
+              className="bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 rounded-2xl p-6 border border-red-100 dark:border-red-800/30 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer text-left"
+            >
+              <div className="text-2xl mb-2">🎂</div>
+              <div className="text-2xl font-bold text-red-600 dark:text-red-400">{analytics.specialOccasions.birthdays.count}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Birthdays</div>
+              {analytics.specialOccasions.birthdays.messages.length > 0 && (
+                <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+                  "{analytics.specialOccasions.birthdays.messages[0].substring(0, 50)}..."
                 </div>
               )}
             </button>
@@ -451,7 +629,8 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
                   <span className="text-2xl">
                     {selectedCategory === 'Wishes' ? '🎉' : 
                      selectedCategory === 'Congratulations' ? '🏆' : 
-                     selectedCategory === 'Festivals' ? '🎊' : '📅'}
+                     selectedCategory === 'Festivals' ? '🎊' : 
+                     selectedCategory === 'Special Days' ? '📅' : '🎂'}
                   </span>
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                     {selectedCategory} Messages ({selectedMessages.length})
