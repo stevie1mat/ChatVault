@@ -32,19 +32,19 @@ export default function AnalyticsDashboard({ chatData, filteredMessages, overvie
     <div className="space-y-8">
       {/* Key Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
           <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">{overviewStats.totalMessages.toLocaleString()}</div>
           <div className="text-gray-600 dark:text-gray-400">Total Messages</div>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
           <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">{overviewStats.totalParticipants}</div>
           <div className="text-gray-600 dark:text-gray-400">Participants</div>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
           <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">{daysActive}</div>
           <div className="text-gray-600 dark:text-gray-400">Days Active</div>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
           <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">{averageMessagesPerDay}</div>
           <div className="text-gray-600 dark:text-gray-400">Avg/Day</div>
         </div>
@@ -52,7 +52,7 @@ export default function AnalyticsDashboard({ chatData, filteredMessages, overvie
 
       {/* Engagement Metrics */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Engagement Metrics</h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
@@ -74,7 +74,7 @@ export default function AnalyticsDashboard({ chatData, filteredMessages, overvie
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Activity Peaks</h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
@@ -98,7 +98,7 @@ export default function AnalyticsDashboard({ chatData, filteredMessages, overvie
       </div>
 
       {/* Participant Overview */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Participant Overview</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {chatData.participants.map((participant: string, index: number) => {
