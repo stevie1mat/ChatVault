@@ -181,28 +181,28 @@ export default function Home() {
             </div>
 
             {/* Overlapping Analytics Widgets */}
-            {/* Processing Status */}
+            {/* Messages Count */}
             <div className="absolute -top-8 -left-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-2xl p-6 z-20 text-white">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-1">Processing</div>
-                <div className="text-xs opacity-90">File Upload</div>
+                <div className="text-3xl font-bold mb-1">1,247</div>
+                <div className="text-xs opacity-90">Messages</div>
                 <div className="w-8 h-1 bg-blue-300 rounded-full mx-auto mt-2"></div>
               </div>
             </div>
 
-            {/* File Size */}
+            {/* Participants */}
             <div className="absolute -top-8 -right-8 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-2xl p-6 z-20 text-white">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-1">2.4 MB</div>
-                <div className="text-xs opacity-90">File Size</div>
+                <div className="text-3xl font-bold mb-1">3</div>
+                <div className="text-xs opacity-90">Participants</div>
                 <div className="w-8 h-1 bg-green-300 rounded-full mx-auto mt-2"></div>
               </div>
             </div>
 
-            {/* Upload Progress */}
+            {/* Activity Chart */}
             <div className="absolute -bottom-8 -left-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-2xl p-6 z-20 text-white">
               <div className="text-center">
-                <div className="text-lg font-bold mb-3">Progress</div>
+                <div className="text-lg font-bold mb-3">Activity</div>
                 <div className="flex items-end space-x-1 h-16 mb-2">
                   <div className="w-3 bg-purple-300 rounded-t h-6"></div>
                   <div className="w-3 bg-purple-300 rounded-t h-8"></div>
@@ -212,23 +212,23 @@ export default function Home() {
                   <div className="w-3 bg-purple-300 rounded-t h-12"></div>
                   <div className="w-3 bg-purple-300 rounded-t h-8"></div>
                 </div>
-                <div className="text-xs opacity-90">75% Complete</div>
+                <div className="text-xs opacity-90">This Week</div>
               </div>
             </div>
 
-            {/* Success Status */}
+            {/* Search Results */}
             <div className="absolute -bottom-8 -right-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl shadow-2xl p-6 z-20 text-white">
               <div className="text-center">
-                <div className="text-lg font-bold mb-2">Status</div>
-                <div className="text-xs opacity-90 mb-1">Ready for Analysis</div>
-                <div className="text-xs bg-orange-400 px-2 py-1 rounded-full">Success</div>
+                <div className="text-lg font-bold mb-2">Search</div>
+                <div className="text-xs opacity-90 mb-1">23 results found</div>
+                <div className="text-xs bg-orange-400 px-2 py-1 rounded-full">"meeting"</div>
               </div>
             </div>
 
-            {/* Upload Button */}
+            {/* Analytics Button */}
             <div className="absolute top-1/2 -right-6 transform -translate-y-1/2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white rounded-full p-4 shadow-2xl z-20 hover:scale-110 transition-transform duration-200">
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
               </svg>
             </div>
           </div>
