@@ -177,10 +177,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Analytics Button */}
-              <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-shadow">
-                View Analytics
-              </button>
+
             </div>
 
             {/* Overlapping Analytics Widgets */}
