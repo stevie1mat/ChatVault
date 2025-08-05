@@ -12,7 +12,6 @@ export default function ChatLayout({
   children: React.ReactNode;
 }) {
   const [chatData, setChatData] = useState<ParsedChatData | null>(null);
-  const pathname = usePathname();
 
   // Get chat data from storage
   useEffect(() => {
