@@ -55,6 +55,8 @@ export default function AnalyticsLayout({
     { href: '/analytics', label: 'Overview', icon: '📊' },
     { href: '/analytics/participants', label: 'Participants', icon: '👥' },
     { href: '/analytics/activity', label: 'Activity Patterns', icon: '📈' },
+    { href: '/analytics/activity-charts', label: 'Activity Charts', icon: '��' },
+    { href: '/analytics/detailed', label: 'Detailed Analytics', icon: '🔍' },
     { href: '/analytics/special-occasions', label: 'Special Occasions', icon: '🎉' },
     { href: '/analytics/response-times', label: 'Response Times', icon: '⏱️' },
     { href: '/analytics/message-stats', label: 'Message Stats', icon: '💬' },

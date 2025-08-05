@@ -338,7 +338,8 @@ export default function AnalyticsOverviewPage() {
 
   return (
     <div className="space-y-8">
-      <div className="text-center space-y-6">
+      
+      <div className="text-left space-y-6">
         <h2 className="text-4xl font-bold text-gray-900 dark:text-white">Analytics Overview</h2>
       </div>
 
@@ -409,55 +410,6 @@ export default function AnalyticsOverviewPage() {
         </div>
       </div>
 
-      {/* Activity Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Hourly Activity</h3>
-          <div className="space-y-4">
-            <div className="flex space-x-1">
-              {overviewStats.hourlyActivity.map((count, hour) => (
-                <div key={hour} className="flex-1 text-center">
-                  <div
-                    className="bg-blue-500 rounded-t"
-                    style={{
-                      height: `${Math.max(20, (count / Math.max(...overviewStats.hourlyActivity)) * 150)}px`,
-                      backgroundColor: count > 0 
-                        ? `hsl(${200 + (count / Math.max(...overviewStats.hourlyActivity)) * 60}, 70%, 60%)`
-                        : '#e5e7eb'
-                    }}
-                    title={`${hour}:00 - ${count} messages`}
-                  />
-                  <div className="text-xs text-gray-600 dark:text-gray-400 mt-2">{hour}:00</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Daily Activity</h3>
-          <div className="space-y-4">
-            <div className="flex space-x-1">
-              {overviewStats.dailyActivity.map((count, day) => (
-                <div key={day} className="flex-1 text-center">
-                  <div
-                    className="bg-green-500 rounded-t"
-                    style={{
-                      height: `${Math.max(20, (count / Math.max(...overviewStats.dailyActivity)) * 150)}px`,
-                      backgroundColor: count > 0 
-                        ? `hsl(${120 + (count / Math.max(...overviewStats.dailyActivity)) * 60}, 70%, 60%)`
-                        : '#e5e7eb'
-                    }}
-                    title={`${dayNames[day]} - ${count} messages`}
-                  />
-                  <div className="text-xs text-gray-600 dark:text-gray-400 mt-2">{dayNames[day].slice(0, 3)}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Participant Overview */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Participant Overview</h3>
@@ -494,12 +446,6 @@ export default function AnalyticsOverviewPage() {
             );
           })}
         </div>
-      </div>
-
-      {/* Full Analytics Dashboard */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Detailed Analytics</h3>
-        <AnalyticsDashboard messages={filteredMessages} participants={chatData.participants} />
       </div>
     </div>
   );
