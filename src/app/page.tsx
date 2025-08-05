@@ -393,19 +393,19 @@ export default function Home() {
       </div>
 
       {/* CTA Section */}
-      <div className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-500 to-purple-600">
+      <div className="py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#fdf4f2' }}>
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
+          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
             Ready to Analyze Your Chats?
           </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Start exploring your WhatsApp conversations with powerful search, filtering, and analytics tools.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-4 rounded-xl font-bold hover:bg-gray-50 transition-colors">
+            <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-xl font-bold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-lg">
               Get Started Now
             </button>
-            <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-bold hover:bg-white hover:text-blue-600 transition-colors">
+            <button className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl font-bold hover:bg-gray-50 transition-colors">
               Learn More
             </button>
           </div>
