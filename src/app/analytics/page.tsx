@@ -141,19 +141,31 @@ export default function AnalyticsOverviewPage() {
 
   if (!chatData) {
     return (
-      <div className="text-center space-y-8">
-        <div className="space-y-6">
-          <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Analytics Overview
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            No chat data available. Please upload a chat file on the main page to view analytics.
-          </p>
-        </div>
-        <div className="flex justify-center">
-          <a href="/" className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
-            Upload Chat File
-          </a>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-8">
+          <div className="space-y-4">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white">Analytics Dashboard</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+              No chat data available. Please upload a chat file on the main page to view analytics.
+            </p>
+          </div>
+          <div className="flex justify-center space-x-4">
+            <a href="/" className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+              Upload Chat File
+            </a>
+            <button 
+              onClick={async () => {
+                console.log('=== DEBUG STORAGE ===');
+                const data = await chatStorage.getChatData();
+                console.log('Raw storage data:', data);
+                console.log('localStorage keys:', Object.keys(localStorage));
+                console.log('localStorage chatData:', localStorage.getItem('chatData'));
+              }}
+              className="px-8 py-4 bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold rounded-xl hover:from-red-600 hover:to-orange-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              Debug Storage
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -171,6 +183,36 @@ export default function AnalyticsOverviewPage() {
           <p className="text-lg text-gray-600 dark:text-gray-400">
             Chat data was too large for detailed analytics. Here are the enhanced basic statistics:
           </p>
+        </div>
+
+        {/* Debug Section */}
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-xl p-6">
+          <h3 className="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mb-4">🔍 Debug Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <strong>Total Messages:</strong> {chatData.totalMessages}
+            </div>
+            <div>
+              <strong>Messages Array Length:</strong> {chatData.messages.length}
+            </div>
+            <div>
+              <strong>Participants:</strong> {chatData.participants.length}
+            </div>
+            <div>
+              <strong>Date Range:</strong> {chatData.dateRange.start.toLocaleDateString()} - {chatData.dateRange.end.toLocaleDateString()}
+            </div>
+          </div>
+          <button 
+            onClick={async () => {
+              console.log('=== DEBUG FALLBACK DATA ===');
+              console.log('chatData:', chatData);
+              const storageData = await chatStorage.getChatData();
+              console.log('Storage data:', storageData);
+            }}
+            className="mt-4 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors"
+          >
+            Debug Data
+          </button>
         </div>
 
         {/* Enhanced Key Metrics Grid */}
