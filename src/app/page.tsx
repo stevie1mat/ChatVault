@@ -30,7 +30,7 @@ export default function Home() {
                 How to?
               </button>
               <button 
-                onClick={() => router.push('/chat')}
+                onClick={() => router.push('/upload')}
                 className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
               >
                 Get Started
@@ -403,7 +403,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              onClick={() => router.push('/chat')}
+              onClick={() => router.push('/upload')}
               className="bg-red-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-red-700 transition-colors shadow-lg"
             >
               Get Started Now
