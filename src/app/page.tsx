@@ -28,6 +28,7 @@ export default function Home() {
 
   const handleChatParsed = useCallback(async (data: ParsedChatData) => {
     console.log('handleChatParsed called with data:', data);
+    console.log('Messages count:', data.messages.length);
     setChatData(data);
     
     // Store chat data using the new storage system
@@ -45,10 +46,17 @@ export default function Home() {
         }
       };
       
+      console.log('Data to store - Messages:', dataToStore.messages.length);
       await chatStorage.storeChatData(dataToStore);
       console.log('Chat data stored successfully');
+      
+      // Verify storage worked
+      const storedData = await chatStorage.getChatData();
+      console.log('Verification - Stored messages:', storedData?.messages?.length || 0);
+      
     } catch (error) {
       console.error('Error storing chat data:', error);
+      alert('Failed to store chat data. Please try again or use a smaller chat file.');
     }
   }, []);
 

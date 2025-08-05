@@ -21,46 +21,74 @@ export class ChatStorage {
   }
 
   async storeChatData(data: any): Promise<void> {
-    try {
-      // First try localStorage for small files
-      const localStorageSize = JSON.stringify(data).length;
-      console.log('Data size:', localStorageSize, 'bytes');
-      
-      if (localStorageSize < 4 * 1024 * 1024) { // 4MB limit for localStorage
-        localStorage.setItem('chatData', JSON.stringify(data));
-        console.log('Stored in localStorage:', localStorageSize, 'bytes');
-        return;
+    const dataSize = JSON.stringify(data).length;
+    const messageCount = data.messages?.length || 0;
+    
+    console.log('Data size:', dataSize, 'bytes, Messages:', messageCount);
+    
+    // Force IndexedDB for large files or files with many messages
+    if (dataSize > 4 * 1024 * 1024 || messageCount > 1000) {
+      console.log('Using IndexedDB for large file storage');
+      try {
+        const db = await this.initDB();
+        const transaction = db.transaction([this.storeName], 'readwrite');
+        const store = transaction.objectStore(this.storeName);
+        
+        const request = store.put({
+          id: 'current',
+          data: data,
+          timestamp: Date.now()
+        });
+        
+        return new Promise((resolve, reject) => {
+          request.onsuccess = () => {
+            console.log('Stored in IndexedDB successfully');
+            resolve();
+          };
+          request.onerror = () => {
+            console.error('IndexedDB storage error:', request.error);
+            reject(request.error);
+          };
+        });
+      } catch (error) {
+        console.error('IndexedDB storage failed:', error);
+        throw error;
       }
+    }
+    
+    // Use localStorage for small files
+    try {
+      console.log('Using localStorage for small file storage');
+      localStorage.setItem('chatData', JSON.stringify(data));
+      console.log('Stored in localStorage:', dataSize, 'bytes');
     } catch (error) {
       console.log('localStorage failed, trying IndexedDB...');
-    }
-
-    // Use IndexedDB for large files
-    try {
-      console.log('Using IndexedDB for large file storage');
-      const db = await this.initDB();
-      const transaction = db.transaction([this.storeName], 'readwrite');
-      const store = transaction.objectStore(this.storeName);
-      
-      const request = store.put({
-        id: 'current',
-        data: data,
-        timestamp: Date.now()
-      });
-      
-      return new Promise((resolve, reject) => {
-        request.onsuccess = () => {
-          console.log('Stored in IndexedDB successfully');
-          resolve();
-        };
-        request.onerror = () => {
-          console.error('IndexedDB storage error:', request.error);
-          reject(request.error);
-        };
-      });
-    } catch (error) {
-      console.error('IndexedDB storage failed:', error);
-      throw error;
+      // Fallback to IndexedDB if localStorage fails
+      try {
+        const db = await this.initDB();
+        const transaction = db.transaction([this.storeName], 'readwrite');
+        const store = transaction.objectStore(this.storeName);
+        
+        const request = store.put({
+          id: 'current',
+          data: data,
+          timestamp: Date.now()
+        });
+        
+        return new Promise((resolve, reject) => {
+          request.onsuccess = () => {
+            console.log('Fallback: Stored in IndexedDB successfully');
+            resolve();
+          };
+          request.onerror = () => {
+            console.error('Fallback: IndexedDB storage error:', request.error);
+            reject(request.error);
+          };
+        });
+      } catch (indexedDBError) {
+        console.error('Both localStorage and IndexedDB failed:', indexedDBError);
+        throw indexedDBError;
+      }
     }
   }
 
