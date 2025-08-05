@@ -218,50 +218,50 @@ export default function AnalyticsOverviewPage() {
 
         {/* Enhanced Key Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="group relative bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <div className="group relative bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
             <div className="absolute top-4 right-4 text-white/20 text-3xl">💬</div>
             <div className="text-4xl font-bold text-white mb-2">{chatData.totalMessages.toLocaleString()}</div>
             <div className="text-blue-100 font-medium">Total Messages</div>
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 rounded-b-2xl"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 rounded-b-lg"></div>
           </div>
-          <div className="group relative bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <div className="group relative bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
             <div className="absolute top-4 right-4 text-white/20 text-3xl">👥</div>
             <div className="text-4xl font-bold text-white mb-2">{chatData.participants.length}</div>
             <div className="text-green-100 font-medium">Participants</div>
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 rounded-b-2xl"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 rounded-b-lg"></div>
           </div>
-          <div className="group relative bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <div className="group relative bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
             <div className="absolute top-4 right-4 text-white/20 text-3xl">📅</div>
             <div className="text-4xl font-bold text-white mb-2">{daysActive}</div>
             <div className="text-purple-100 font-medium">Days Active</div>
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 rounded-b-2xl"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 rounded-b-lg"></div>
           </div>
-          <div className="group relative bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <div className="group relative bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
             <div className="absolute top-4 right-4 text-white/20 text-3xl">📊</div>
             <div className="text-4xl font-bold text-white mb-2">{averageMessagesPerDay}</div>
             <div className="text-orange-100 font-medium">Avg/Day</div>
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 rounded-b-2xl"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 rounded-b-lg"></div>
           </div>
         </div>
 
         {/* Enhanced Statistics */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-8 shadow-lg">
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 shadow-lg">
             <div className="flex items-center mb-6">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mr-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-4">
                 <span className="text-2xl">📈</span>
               </div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Chat Statistics</h3>
             </div>
             <div className="space-y-6">
-              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl">
+              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg">
                 <div className="flex items-center">
                   <span className="text-blue-600 dark:text-blue-400 mr-3">📅</span>
                   <span className="text-gray-700 dark:text-gray-300">Chat Duration</span>
                 </div>
                 <span className="text-xl font-bold text-blue-600 dark:text-blue-400">{daysActive} days</span>
               </div>
-              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl">
+              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg">
                 <div className="flex items-center">
                   <span className="text-green-600 dark:text-green-400 mr-3">📊</span>
                   <span className="text-gray-700 dark:text-gray-300">Date Range</span>
@@ -270,14 +270,14 @@ export default function AnalyticsOverviewPage() {
                   {chatData.dateRange.start.toLocaleDateString()} - {chatData.dateRange.end.toLocaleDateString()}
                 </span>
               </div>
-              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl">
+              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg">
                 <div className="flex items-center">
                   <span className="text-purple-600 dark:text-purple-400 mr-3">📈</span>
                   <span className="text-gray-700 dark:text-gray-300">Average Messages/Day</span>
                 </div>
                 <span className="text-xl font-bold text-purple-600 dark:text-purple-400">{averageMessagesPerDay}</span>
               </div>
-              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-xl">
+              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-lg">
                 <div className="flex items-center">
                   <span className="text-orange-600 dark:text-orange-400 mr-3">👥</span>
                   <span className="text-gray-700 dark:text-gray-300">Total Participants</span>
@@ -287,18 +287,18 @@ export default function AnalyticsOverviewPage() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-8 shadow-lg">
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 shadow-lg">
             <div className="flex items-center mb-6">
-              <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center mr-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mr-4">
                 <span className="text-2xl">👥</span>
               </div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Participant Information</h3>
             </div>
             <div className="space-y-4">
               {chatData.participants.map((participant, index) => (
-                <div key={participant} className="flex justify-between items-center p-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-xl">
+                <div key={participant} className="flex justify-between items-center p-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-lg">
                   <div className="flex items-center">
-                    <div className={`w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mr-3`}>
+                    <div className={`w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3`}>
                       <span className="text-white font-bold text-sm">#{index + 1}</span>
                     </div>
                     <span className="text-gray-700 dark:text-gray-300 font-medium">{participant}</span>
@@ -307,7 +307,7 @@ export default function AnalyticsOverviewPage() {
                 </div>
               ))}
             </div>
-            <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl">
+            <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg">
               <div className="text-sm text-blue-600 dark:text-blue-400">
                 <strong>💡 Note:</strong> Detailed analytics require full message data. For comprehensive insights, try uploading a smaller chat file or use the main chat view for searching and filtering.
               </div>
@@ -316,27 +316,27 @@ export default function AnalyticsOverviewPage() {
         </div>
 
         {/* Activity Insights */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-8 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 shadow-lg">
           <div className="flex items-center mb-6">
-            <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center mr-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center mr-4">
               <span className="text-2xl">📊</span>
             </div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Activity Insights</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-6 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl">
+            <div className="text-center p-6 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg">
               <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
                 {Math.round(chatData.totalMessages / daysActive)}
               </div>
               <div className="text-gray-600 dark:text-gray-400 font-medium">Messages per Day</div>
             </div>
-            <div className="text-center p-6 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl">
+            <div className="text-center p-6 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg">
               <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
                 {Math.round((chatData.totalMessages / daysActive) / 24)}
               </div>
               <div className="text-gray-600 dark:text-gray-400 font-medium">Messages per Hour</div>
             </div>
-            <div className="text-center p-6 bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl">
+            <div className="text-center p-6 bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg">
               <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
                 {Math.round(chatData.totalMessages / chatData.participants.length)}
               </div>
@@ -346,7 +346,7 @@ export default function AnalyticsOverviewPage() {
         </div>
 
         <div className="text-center">
-          <a href="/" className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+          <a href="/" className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
             ← Back to Chat
           </a>
         </div>
