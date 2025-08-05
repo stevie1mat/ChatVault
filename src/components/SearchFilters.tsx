@@ -18,8 +18,6 @@ export default function SearchFilters({ participants, dateRange, onFiltersChange
     sender: null
   });
 
-  const [showTimeFilter, setShowTimeFilter] = useState(false);
-
   useEffect(() => {
     onFiltersChange(filters);
   }, [filters, onFiltersChange]);
@@ -75,7 +73,7 @@ export default function SearchFilters({ participants, dateRange, onFiltersChange
               placeholder="Search by keyword..."
               value={filters.keyword}
               onChange={(e) => handleFilterChange('keyword', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
             />
             {filters.keyword && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -90,93 +88,37 @@ export default function SearchFilters({ participants, dateRange, onFiltersChange
           <label className="block text-sm font-medium text-gray-900 dark:text-white">
             Date Range
           </label>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div>
-              <input
-                type="date"
-                min={formatDate(dateRange.start)}
-                max={formatDate(dateRange.end)}
-                value={filters.startDate ? formatDate(filters.startDate) : ''}
-                onChange={(e) => handleFilterChange('startDate', e.target.value ? new Date(e.target.value) : null)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
-              />
-            </div>
-            <div>
-              <input
-                type="date"
-                min={formatDate(dateRange.start)}
-                max={formatDate(dateRange.end)}
-                value={filters.endDate ? formatDate(filters.endDate) : ''}
-                onChange={(e) => handleFilterChange('endDate', e.target.value ? new Date(e.target.value) : null)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
-              />
-            </div>
+          <div>
+            <input
+              type="date"
+              min={formatDate(dateRange.start)}
+              max={formatDate(dateRange.end)}
+              value={filters.startDate ? formatDate(filters.startDate) : ''}
+              onChange={(e) => handleFilterChange('startDate', e.target.value ? new Date(e.target.value) : null)}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+            />
           </div>
         </div>
 
         {/* Time Range */}
         <div className="space-y-3">
-          <button
-            onClick={() => setShowTimeFilter(!showTimeFilter)}
-            className="flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
-          >
-            <span>{showTimeFilter ? '▼' : '▶'}</span>
-            <span>{showTimeFilter ? 'Hide' : 'Show'} Time Filter</span>
-          </button>
-          
-          {showTimeFilter && (
-            <div className="space-y-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                    Start Time
-                  </label>
-                  <input
-                    type="time"
-                    value={filters.timeRange?.start || ''}
-                    onChange={(e) => handleFilterChange('timeRange', {
-                      ...filters.timeRange,
-                      start: e.target.value
-                    })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                    End Time
-                  </label>
-                  <input
-                    type="time"
-                    value={filters.timeRange?.end || ''}
-                    onChange={(e) => handleFilterChange('timeRange', {
-                      ...filters.timeRange,
-                      end: e.target.value
-                    })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Sender Filter */}
-        <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-900 dark:text-white">
-            Filter by Sender
+            Time Filter
           </label>
-          <select
-            value={filters.sender || ''}
-            onChange={(e) => handleFilterChange('sender', e.target.value || null)}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
-          >
-            <option value="">All senders</option>
-            {participants.map((participant) => (
-              <option key={participant} value={participant}>
-                {participant}
-              </option>
-            ))}
-          </select>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+              Time
+            </label>
+            <input
+              type="time"
+              value={filters.timeRange?.start || ''}
+              onChange={(e) => handleFilterChange('timeRange', {
+                start: e.target.value,
+                end: e.target.value
+              })}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+            />
+          </div>
         </div>
 
         {/* Active filters indicator */}
@@ -193,14 +135,9 @@ export default function SearchFilters({ participants, dateRange, onFiltersChange
                   From: {filters.startDate.toLocaleDateString()}
                 </span>
               )}
-              {filters.endDate && (
-                <span className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-full text-xs">
-                  To: {filters.endDate.toLocaleDateString()}
-                </span>
-              )}
-              {filters.sender && (
-                <span className="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 rounded-full text-xs">
-                  Sender: {filters.sender}
+              {filters.timeRange && filters.timeRange.start && (
+                <span className="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 rounded-full text-xs">
+                  Time: {filters.timeRange.start}
                 </span>
               )}
             </div>

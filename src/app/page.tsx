@@ -48,21 +48,27 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                  WhatsApp Chat Parser
-                </h1>
+              <div className="flex items-center space-x-4">
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white">WhatsApp Chat Parser</h1>
+                {chatData && (
+                  <div className="flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center space-x-2">
+                      <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-full text-sm font-medium">
+                        {chatData.totalMessages} messages
+                      </span>
+                      <span>•</span>
+                      <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full text-sm font-medium">
+                        {chatData.participants.length} participants
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 rounded-full text-sm font-medium">
+                        {chatData.dateRange.start.toLocaleDateString()} - {chatData.dateRange.end.toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
-              {chatData && (
-                <div className="hidden sm:flex items-center space-x-4">
-                  <div className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-full text-sm font-medium">
-                    {chatData.totalMessages} messages
-                  </div>
-                  <div className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full text-sm font-medium">
-                    {chatData.participants.length} participants
-                  </div>
-                </div>
-              )}
             </div>
             <div className="flex items-center space-x-4">
               {!chatData && (
@@ -147,13 +153,8 @@ export default function Home() {
             {/* Hero Section */}
             <div className="text-center space-y-8">
               <div className="space-y-6">
-                <h2 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white">
-                  Parse Your WhatsApp Chat
-                </h2>
-                <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-                  Upload your WhatsApp chat export and explore your conversations with powerful search, 
-                  filtering, and analysis tools.
-                </p>
+                <h2 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white">Search Your WhatsApp Chat</h2>
+                <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">Upload your WhatsApp chat export and explore your conversations with powerful search, filtering, and analysis tools.</p>
               </div>
             </div>
 
@@ -198,25 +199,6 @@ export default function Home() {
         ) : (
           // Chat view with clean design
           <div className="space-y-8">
-            {/* Chat Header */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 border border-gray-200 dark:border-gray-700">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-6">
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                      Chat Analysis
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-400 mt-1">
-                      {filteredMessages.length} of {chatData.totalMessages} messages • {chatData.participants.length} participants
-                    </p>
-                  </div>
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  {chatData.dateRange.start.toLocaleDateString()} - {chatData.dateRange.end.toLocaleDateString()}
-                </div>
-              </div>
-            </div>
-
             {/* Main Content Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
               {/* Filters sidebar */}
@@ -245,10 +227,28 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="flex items-center space-x-3">
-                        {chatData.participants.map((participant, index) => (
-                          <div key={participant} className="px-3 py-1 bg-gray-200 dark:bg-gray-600 rounded-full text-sm text-gray-700 dark:text-gray-300">
+                        <button
+                          onClick={() => handleFiltersChange({ ...filters, sender: null })}
+                          className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                            !filters.sender 
+                              ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 font-medium' 
+                              : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                          }`}
+                        >
+                          All
+                        </button>
+                        {chatData.participants.map((participant) => (
+                          <button
+                            key={participant}
+                            onClick={() => handleFiltersChange({ ...filters, sender: filters.sender === participant ? null : participant })}
+                            className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                              filters.sender === participant 
+                                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 font-medium' 
+                                : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                            }`}
+                          >
                             {participant}
-                          </div>
+                          </button>
                         ))}
                       </div>
                     </div>

@@ -104,12 +104,11 @@ export function filterMessages(
     }
     
     // Time range filter
-    if (filters.timeRange) {
+    if (filters.timeRange && filters.timeRange.start) {
       const messageHour = message.timestamp.getHours();
-      const startHour = parseInt(filters.timeRange.start.split(':')[0]);
-      const endHour = parseInt(filters.timeRange.end.split(':')[0]);
+      const filterHour = parseInt(filters.timeRange.start.split(':')[0]);
       
-      if (messageHour < startHour || messageHour > endHour) {
+      if (messageHour !== filterHour) {
         return false;
       }
     }
