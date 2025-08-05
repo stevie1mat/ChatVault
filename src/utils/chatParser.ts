@@ -88,13 +88,22 @@ export function filterMessages(
     sender?: string | null;
   }
 ): ChatMessage[] {
+  // Early return if no filters applied
+  const hasFilters = filters.keyword || filters.startDate || filters.endDate || filters.timeRange || filters.sender;
+  if (!hasFilters) {
+    return messages;
+  }
+
+  // Pre-compile keyword for case-insensitive search
+  const keywordLower = filters.keyword?.toLowerCase();
+  
   return messages.filter(message => {
-    // Keyword filter
-    if (filters.keyword && !message.content.toLowerCase().includes(filters.keyword.toLowerCase())) {
+    // Keyword filter - early return if no match
+    if (keywordLower && !message.content.toLowerCase().includes(keywordLower)) {
       return false;
     }
     
-    // Date range filter
+    // Date range filter - early return if out of range
     if (filters.startDate && message.timestamp < filters.startDate) {
       return false;
     }
@@ -103,7 +112,7 @@ export function filterMessages(
       return false;
     }
     
-    // Time range filter
+    // Time range filter - early return if out of range
     if (filters.timeRange && filters.timeRange.start) {
       const messageHour = message.timestamp.getHours();
       const filterHour = parseInt(filters.timeRange.start.split(':')[0]);
@@ -113,7 +122,7 @@ export function filterMessages(
       }
     }
     
-    // Sender filter
+    // Sender filter - early return if no match
     if (filters.sender && message.sender !== filters.sender) {
       return false;
     }

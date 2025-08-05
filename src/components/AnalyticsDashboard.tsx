@@ -47,50 +47,82 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
       };
     }
 
-    // Calculate basic stats
+    // Optimize for large datasets - use Map for O(1) lookups
     const totalMessages = messages.length;
-    const dates = [...new Set(messages.map(m => m.timestamp.toDateString()))];
-    const totalDays = dates.length;
-    const averageMessagesPerDay = Math.round(totalMessages / totalDays);
-
-    // Hourly activity
+    
+    // Use Set for unique dates - more efficient than Array.from
+    const dateSet = new Set<string>();
     const hourlyCounts = new Array(24).fill(0);
-    messages.forEach(msg => {
+    const dailyCounts = new Map<string, number>();
+    const dateCounts = new Map<string, number>();
+    const participantCounts = new Map<string, number>();
+    const participantLengths = new Map<string, number[]>();
+    const messageLengths: number[] = [];
+
+    // Single pass through messages for all calculations
+    for (const msg of messages) {
+      // Date calculations
+      const dateStr = msg.timestamp.toDateString();
+      dateSet.add(dateStr);
+      
+      const date = msg.timestamp.toLocaleDateString();
+      dateCounts.set(date, (dateCounts.get(date) || 0) + 1);
+      
+      // Hour calculations
       const hour = msg.timestamp.getHours();
       hourlyCounts[hour]++;
-    });
+      
+      // Day calculations
+      const day = msg.timestamp.toLocaleDateString('en-US', { weekday: 'long' });
+      dailyCounts.set(day, (dailyCounts.get(day) || 0) + 1);
+      
+      // Participant calculations
+      participantCounts.set(msg.sender, (participantCounts.get(msg.sender) || 0) + 1);
+      
+      if (!participantLengths.has(msg.sender)) {
+        participantLengths.set(msg.sender, []);
+      }
+      participantLengths.get(msg.sender)!.push(msg.content.length);
+      
+      // Message length calculations
+      messageLengths.push(msg.content.length);
+    }
+
+    const totalDays = dateSet.size;
+    const averageMessagesPerDay = Math.round(totalMessages / totalDays);
+
+    // Find most active hour
     const mostActiveHour = hourlyCounts.reduce((max, count, hour) => 
       count > max.count ? { hour, count } : max, { hour: 0, count: 0 }
     );
 
-    // Daily activity
-    const dailyCounts: { [key: string]: number } = {};
-    messages.forEach(msg => {
-      const day = msg.timestamp.toLocaleDateString('en-US', { weekday: 'long' });
-      dailyCounts[day] = (dailyCounts[day] || 0) + 1;
-    });
-    const mostActiveDay = Object.entries(dailyCounts).reduce((max, [day, count]) => 
+    // Find most active day
+    const mostActiveDay = Array.from(dailyCounts.entries()).reduce((max, [day, count]) => 
       count > max.count ? { day, count } : max, { day: '', count: 0 }
     );
 
-    // Participant stats
+    // Find most active date
+    const mostActiveDate = Array.from(dateCounts.entries()).reduce((max, [date, count]) => 
+      count > max.count ? { date, count } : max, { date: '', count: 0 }
+    );
+
+    // Calculate participant stats efficiently
     const participantStats = participants.map(name => {
-      const userMessages = messages.filter(m => m.sender === name);
-      const messageCount = userMessages.length;
+      const messageCount = participantCounts.get(name) || 0;
       const percentage = Math.round((messageCount / totalMessages) * 100);
-      const averageLength = userMessages.length > 0 
-        ? Math.round(userMessages.reduce((sum, m) => sum + m.content.length, 0) / userMessages.length)
+      const lengths = participantLengths.get(name) || [];
+      const averageLength = lengths.length > 0 
+        ? Math.round(lengths.reduce((sum, len) => sum + len, 0) / lengths.length)
         : 0;
 
       return { name, messageCount, percentage, averageLength };
     }).sort((a, b) => b.messageCount - a.messageCount);
 
-    // Message length stats
-    const lengths = messages.map(m => m.content.length);
+    // Calculate message length stats efficiently
     const messageLengthStats = {
-      average: Math.round(lengths.reduce((sum, len) => sum + len, 0) / lengths.length),
-      shortest: Math.min(...lengths),
-      longest: Math.max(...lengths)
+      average: Math.round(messageLengths.reduce((sum, len) => sum + len, 0) / messageLengths.length),
+      shortest: Math.min(...messageLengths),
+      longest: Math.max(...messageLengths)
     };
 
     return {
@@ -99,10 +131,10 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
       averageMessagesPerDay,
       mostActiveHour,
       mostActiveDay,
-      mostActiveDate: { date: '', count: 0 }, // Placeholder, will be updated if needed
+      mostActiveDate,
       participantStats,
       hourlyActivity: hourlyCounts.map((count, hour) => ({ hour, count })),
-      dailyActivity: Object.entries(dailyCounts).map(([day, count]) => ({ day, count })),
+      dailyActivity: Array.from(dailyCounts.entries()).map(([day, count]) => ({ day, count })),
       messageLengthStats
     };
   }, [messages, participants]);
@@ -188,7 +220,7 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
         </div>
 
         {/* Activity Patterns */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Most Active Hour */}
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Most Active Hour</h4>
@@ -211,6 +243,19 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">
                 {analytics.mostActiveDay.count} messages
+              </div>
+            </div>
+          </div>
+
+          {/* Most Active Date */}
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Most Active Date</h4>
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800/30">
+              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                {analytics.mostActiveDate.date}
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                {analytics.mostActiveDate.count} messages
               </div>
             </div>
           </div>
