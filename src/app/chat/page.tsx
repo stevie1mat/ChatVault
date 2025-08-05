@@ -8,7 +8,13 @@ import ChatView from '@/components/ChatView';
 import AISearch from '@/components/AISearch';
 import AISearchResults from '@/components/AISearchResults';
 
-export default function ChatPage() {
+interface ChatPageProps {
+  activeFilter?: string;
+  setActiveFilter?: (filter: string) => void;
+  chatData?: ParsedChatData | null;
+}
+
+export default function ChatPage({ activeFilter = 'all', setActiveFilter, chatData: layoutChatData }: ChatPageProps) {
   const [chatData, setChatData] = useState<ParsedChatData | null>(null);
   const [filters, setFilters] = useState({
     keyword: '',
@@ -22,8 +28,13 @@ export default function ChatPage() {
   const [highlightedMessageId, setHighlightedMessageId] = useState<string | undefined>(undefined);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // Load chat data from storage
+  // Load chat data from storage or use layout data
   useEffect(() => {
+    if (layoutChatData) {
+      setChatData(layoutChatData);
+      return;
+    }
+
     const loadChatData = async () => {
       try {
         const storedData = await chatStorage.getChatData();
@@ -56,13 +67,21 @@ export default function ChatPage() {
     };
 
     loadChatData();
-  }, []);
+  }, [layoutChatData]);
 
-  // Filter messages based on current filters
+  // Filter messages based on current filters and active filter
   const filteredMessages = useMemo(() => {
     if (!chatData) return [];
-    return filterMessages(chatData.messages, filters);
-  }, [chatData, filters]);
+    
+    let messages = filterMessages(chatData.messages, filters);
+    
+    // Apply active filter (All or specific participant)
+    if (activeFilter && activeFilter !== 'all') {
+      messages = messages.filter(message => message.sender === activeFilter);
+    }
+    
+    return messages;
+  }, [chatData, filters, activeFilter]);
 
   const handleFilterChange = (key: string, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value }));

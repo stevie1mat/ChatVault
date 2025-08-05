@@ -12,6 +12,7 @@ export default function ChatLayout({
   children: React.ReactNode;
 }) {
   const [chatData, setChatData] = useState<ParsedChatData | null>(null);
+  const [activeFilter, setActiveFilter] = useState<string>('all');
 
   // Get chat data from storage
   useEffect(() => {
@@ -117,6 +118,32 @@ export default function ChatLayout({
                   <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 rounded-full text-sm font-medium">
                     {chatData.dateRange.start.toLocaleDateString()} - {chatData.dateRange.end.toLocaleDateString()}
                   </span>
+                </div>
+                {/* Filter Tabs */}
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setActiveFilter('all')}
+                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                      activeFilter === 'all'
+                        ? 'bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
+                  >
+                    All
+                  </button>
+                  {chatData.participants.map((participant) => (
+                    <button
+                      key={participant}
+                      onClick={() => setActiveFilter(participant)}
+                      className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                        activeFilter === participant
+                          ? 'bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                      }`}
+                    >
+                      {participant}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>

@@ -26,24 +26,9 @@ export async function searchWithMistralAI(
     throw new Error('Mistral AI API key not configured');
   }
 
-  // Smart message selection based on query type
+  // Let the AI decide what it needs - always provide full context
   let selectedMessages = messages;
-  
-  // For temporal queries (first, earliest, etc.), we need the full history
-  const isTemporalQuery = query.toLowerCase().includes('first') || 
-                          query.toLowerCase().includes('earliest') || 
-                          query.toLowerCase().includes('when did') ||
-                          query.toLowerCase().includes('who said');
-  
-  if (isTemporalQuery) {
-    // For temporal queries, use all messages but limit content length
-    selectedMessages = messages;
-    console.log('🔍 Using full chat history for temporal query');
-  } else {
-    // For other queries, use recent messages to stay within token limits
-    selectedMessages = messages.slice(-100);
-    console.log('🔍 Using last 100 messages for general query');
-  }
+  console.log('🔍 Providing full chat history to AI');
   
   // Prepare messages for the AI (simplified format with date info)
   let messageTexts = selectedMessages.map((msg, index) => {
@@ -57,8 +42,8 @@ export async function searchWithMistralAI(
   if (messageTexts.length > maxPromptLength) {
     console.log('📝 Prompt too long, truncating intelligently...');
     
-    // For temporal queries, try to keep early and recent messages
-    if (isTemporalQuery) {
+    // If the prompt is too long, truncate intelligently but keep important parts
+    if (true) {
       const messages = selectedMessages;
       const earlyMessages = messages.slice(0, 50); // First 50 messages
       const recentMessages = messages.slice(-50); // Last 50 messages

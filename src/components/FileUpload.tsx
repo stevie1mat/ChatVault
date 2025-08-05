@@ -21,11 +21,22 @@ export default function FileUpload({ onChatParsed }: FileUploadProps) {
       return;
     }
 
+    // Check file size (50MB limit)
+    const maxSize = 50 * 1024 * 1024; // 50MB
+    if (file.size > maxSize) {
+      setError('File is too large. Please use a file smaller than 50MB.');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
     try {
+      console.log(`📁 Processing file: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+      
       const content = await file.text();
+      console.log(`📝 File content length: ${content.length} characters`);
+      
       const parsedData = parseWhatsAppChat(content);
       
       if (parsedData.messages.length === 0) {
@@ -33,10 +44,15 @@ export default function FileUpload({ onChatParsed }: FileUploadProps) {
         return;
       }
 
+      console.log(`✅ Parsed ${parsedData.messages.length} messages successfully`);
       onChatParsed(parsedData);
     } catch (err) {
-      setError('Error reading file. Please try again.');
       console.error('File parsing error:', err);
+      if (err instanceof Error && err.message.includes('memory')) {
+        setError('File is too large for processing. Please try a smaller file.');
+      } else {
+        setError('Error reading file. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -119,7 +135,10 @@ export default function FileUpload({ onChatParsed }: FileUploadProps) {
         <div className="mt-6 text-center">
           <div className="inline-flex items-center space-x-2 text-blue-600 dark:text-blue-400">
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
-            <span>Parsing chat file...</span>
+            <span>Processing large file, please wait...</span>
+          </div>
+          <div className="mt-2 text-sm text-gray-500">
+            Large files may take a moment to process and store
           </div>
         </div>
       )}
