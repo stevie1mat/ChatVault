@@ -45,16 +45,7 @@ export default function SearchFilters({ participants, dateRange, onFiltersChange
   return (
     <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl p-8 space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-end">
-          {hasActiveFilters && (
-            <button
-              onClick={clearFilters}
-              className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200"
-            >
-              Clear all
-            </button>
-          )}
-        </div>
+     
 
         {/* Input Fields in One Line */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
