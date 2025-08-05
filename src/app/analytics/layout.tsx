@@ -148,6 +148,16 @@ export default function AnalyticsLayout({
         {/* Sidebar */}
         <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 min-h-screen">
           <div className="p-6">
+            <div className="mb-6">
+              <Link
+                href="/"
+                className="flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                <span className="text-lg">💬</span>
+                <span>Chat</span>
+              </Link>
+            </div>
+            
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Analytics</h2>
             <nav className="space-y-2">
               {navItems.map((item) => (
