@@ -267,9 +267,29 @@ export function fallbackSearch(query: string, messages: any[]): MistralSearchRes
 export async function analyzeSentimentWithMistral(messages: ChatMessage[]): Promise<any> {
   console.log('🔍 Analyzing sentiment with Mistral AI...');
   
-  const messageTexts = messages.map(msg => 
+  // Prepare messages for the AI with intelligent truncation
+  let messageTexts = messages.map(msg => 
     `[${msg.sender}] ${msg.content}`
   ).join('\n');
+  
+  // If the prompt is too long, truncate it intelligently
+  const maxPromptLength = 30000; // Leave room for response
+  if (messageTexts.length > maxPromptLength) {
+    console.log('📝 Prompt too long, truncating intelligently for sentiment analysis...');
+    
+    const earlyMessages = messages.slice(0, 100); // First 100 messages
+    const recentMessages = messages.slice(-100);   // Last 100 messages
+    
+    const earlyText = earlyMessages.map(msg => 
+      `[${msg.sender}] ${msg.content}`
+    ).join('\n');
+    
+    const recentText = recentMessages.map(msg => 
+      `[${msg.sender}] ${msg.content}`
+    ).join('\n');
+    
+    messageTexts = `[EARLY MESSAGES]\n${earlyText}\n\n[RECENT MESSAGES]\n${recentText}`;
+  }
   
   const prompt = `Analyze the sentiment and emotional tone of this WhatsApp conversation. Provide a comprehensive sentiment analysis including:
 
@@ -317,6 +337,9 @@ Return your analysis as a JSON object with this structure:
 }`;
 
   try {
+    console.log('🔍 Calling Mistral AI API for sentiment analysis...');
+    console.log('📝 Prompt length:', prompt.length, 'characters');
+    
     const response = await fetch(MISTRAL_API_URL, {
       method: 'POST',
       headers: {
@@ -332,6 +355,8 @@ Return your analysis as a JSON object with this structure:
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Mistral API error response:', errorText);
       throw new Error(`Mistral AI API error: ${response.status}`);
     }
 
@@ -359,9 +384,29 @@ Return your analysis as a JSON object with this structure:
 export async function analyzeTopicsWithMistral(messages: ChatMessage[]): Promise<any> {
   console.log('🔍 Analyzing topics with Mistral AI...');
   
-  const messageTexts = messages.map(msg => 
+  // Prepare messages for the AI with intelligent truncation
+  let messageTexts = messages.map(msg => 
     `[${msg.sender}] ${msg.content}`
   ).join('\n');
+  
+  // If the prompt is too long, truncate it intelligently
+  const maxPromptLength = 30000; // Leave room for response
+  if (messageTexts.length > maxPromptLength) {
+    console.log('📝 Prompt too long, truncating intelligently for topic analysis...');
+    
+    const earlyMessages = messages.slice(0, 100); // First 100 messages
+    const recentMessages = messages.slice(-100);   // Last 100 messages
+    
+    const earlyText = earlyMessages.map(msg => 
+      `[${msg.sender}] ${msg.content}`
+    ).join('\n');
+    
+    const recentText = recentMessages.map(msg => 
+      `[${msg.sender}] ${msg.content}`
+    ).join('\n');
+    
+    messageTexts = `[EARLY MESSAGES]\n${earlyText}\n\n[RECENT MESSAGES]\n${recentText}`;
+  }
   
   const prompt = `Analyze this WhatsApp conversation to identify recurring topics and themes. Provide a comprehensive topic analysis including:
 
@@ -419,6 +464,9 @@ Return your analysis as a JSON object with this structure:
 }`;
 
   try {
+    console.log('🔍 Calling Mistral AI API for topic analysis...');
+    console.log('📝 Prompt length:', prompt.length, 'characters');
+    
     const response = await fetch(MISTRAL_API_URL, {
       method: 'POST',
       headers: {
@@ -434,6 +482,8 @@ Return your analysis as a JSON object with this structure:
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Mistral API error response:', errorText);
       throw new Error(`Mistral AI API error: ${response.status}`);
     }
 
@@ -461,9 +511,29 @@ Return your analysis as a JSON object with this structure:
 export async function analyzePatternsWithMistral(messages: ChatMessage[]): Promise<any> {
   console.log('🔍 Analyzing conversation patterns with Mistral AI...');
   
-  const messageTexts = messages.map(msg => 
+  // Prepare messages for the AI with intelligent truncation
+  let messageTexts = messages.map(msg => 
     `[${msg.sender}] ${msg.content}`
   ).join('\n');
+  
+  // If the prompt is too long, truncate it intelligently
+  const maxPromptLength = 30000; // Leave room for response
+  if (messageTexts.length > maxPromptLength) {
+    console.log('📝 Prompt too long, truncating intelligently for pattern analysis...');
+    
+    const earlyMessages = messages.slice(0, 100); // First 100 messages
+    const recentMessages = messages.slice(-100);   // Last 100 messages
+    
+    const earlyText = earlyMessages.map(msg => 
+      `[${msg.sender}] ${msg.content}`
+    ).join('\n');
+    
+    const recentText = recentMessages.map(msg => 
+      `[${msg.sender}] ${msg.content}`
+    ).join('\n');
+    
+    messageTexts = `[EARLY MESSAGES]\n${earlyText}\n\n[RECENT MESSAGES]\n${recentText}`;
+  }
   
   const prompt = `Analyze this WhatsApp conversation to identify conversation patterns and communication dynamics. Provide a comprehensive pattern analysis including:
 
@@ -525,6 +595,9 @@ Return your analysis as a JSON object with this structure:
 }`;
 
   try {
+    console.log('🔍 Calling Mistral AI API for pattern analysis...');
+    console.log('📝 Prompt length:', prompt.length, 'characters');
+    
     const response = await fetch(MISTRAL_API_URL, {
       method: 'POST',
       headers: {
@@ -540,6 +613,8 @@ Return your analysis as a JSON object with this structure:
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Mistral API error response:', errorText);
       throw new Error(`Mistral AI API error: ${response.status}`);
     }
 
@@ -567,9 +642,29 @@ Return your analysis as a JSON object with this structure:
 export async function analyzeResponseTimesWithMistral(messages: ChatMessage[]): Promise<any> {
   console.log('🔍 Analyzing response times with Mistral AI...');
   
-  const messageTexts = messages.map(msg => 
+  // Prepare messages for the AI with intelligent truncation
+  let messageTexts = messages.map(msg => 
     `[${msg.sender}] ${msg.content}`
   ).join('\n');
+  
+  // If the prompt is too long, truncate it intelligently
+  const maxPromptLength = 30000; // Leave room for response
+  if (messageTexts.length > maxPromptLength) {
+    console.log('📝 Prompt too long, truncating intelligently for response time analysis...');
+    
+    const earlyMessages = messages.slice(0, 100); // First 100 messages
+    const recentMessages = messages.slice(-100);   // Last 100 messages
+    
+    const earlyText = earlyMessages.map(msg => 
+      `[${msg.sender}] ${msg.content}`
+    ).join('\n');
+    
+    const recentText = recentMessages.map(msg => 
+      `[${msg.sender}] ${msg.content}`
+    ).join('\n');
+    
+    messageTexts = `[EARLY MESSAGES]\n${earlyText}\n\n[RECENT MESSAGES]\n${recentText}`;
+  }
   
   const prompt = `Analyze this WhatsApp conversation to understand response time patterns and communication responsiveness. Provide a comprehensive response time analysis including:
 
@@ -636,6 +731,9 @@ Return your analysis as a JSON object with this structure:
 }`;
 
   try {
+    console.log('🔍 Calling Mistral AI API for response time analysis...');
+    console.log('📝 Prompt length:', prompt.length, 'characters');
+    
     const response = await fetch(MISTRAL_API_URL, {
       method: 'POST',
       headers: {
@@ -651,6 +749,8 @@ Return your analysis as a JSON object with this structure:
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Mistral API error response:', errorText);
       throw new Error(`Mistral AI API error: ${response.status}`);
     }
 
