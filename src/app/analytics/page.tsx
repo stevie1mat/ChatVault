@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { ParsedChatData, SearchFilters as SearchFiltersType, ChatMessage } from '@/types/chat';
 import { filterMessages } from '@/utils/chatParser';
+import { chatStorage } from '@/utils/storage';
 import AnalyticsDashboard from '@/components/AnalyticsDashboard';
 
 export default function AnalyticsOverviewPage() {
@@ -15,36 +16,40 @@ export default function AnalyticsOverviewPage() {
     sender: null
   });
 
-  // Get chat data from localStorage
+  // Get chat data from storage
   useEffect(() => {
-    const storedChatData = localStorage.getItem('chatData');
-    if (storedChatData) {
+    const loadChatData = async () => {
       try {
-        const parsedData = JSON.parse(storedChatData);
-        if (parsedData.messages && parsedData.messages.length > 0) {
-          parsedData.messages = parsedData.messages.map((msg: any) => ({
-            ...msg,
-            timestamp: new Date(msg.timestamp)
-          }));
-          parsedData.dateRange = {
-            start: new Date(parsedData.dateRange.start),
-            end: new Date(parsedData.dateRange.end)
-          };
-          setChatData(parsedData);
-        } else {
-          setChatData({
-            ...parsedData,
-            messages: [],
-            dateRange: {
-              start: new Date(parsedData.dateRange.start),
-              end: new Date(parsedData.dateRange.end)
-            }
-          });
+        const storedData = await chatStorage.getChatData();
+        if (storedData) {
+          // Convert date strings back to Date objects
+          if (storedData.messages && storedData.messages.length > 0) {
+            storedData.messages = storedData.messages.map((msg: any) => ({
+              ...msg,
+              timestamp: new Date(msg.timestamp)
+            }));
+            storedData.dateRange = {
+              start: new Date(storedData.dateRange.start),
+              end: new Date(storedData.dateRange.end)
+            };
+            setChatData(storedData);
+          } else {
+            setChatData({
+              ...storedData,
+              messages: [],
+              dateRange: {
+                start: new Date(storedData.dateRange.start),
+                end: new Date(storedData.dateRange.end)
+              }
+            });
+          }
         }
       } catch (error) {
-        console.error('Error parsing stored chat data:', error);
+        console.error('Error loading chat data:', error);
       }
-    }
+    };
+
+    loadChatData();
   }, []);
 
   const filteredMessages = useMemo(() => {

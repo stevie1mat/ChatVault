@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { ParsedChatData, SearchFilters as SearchFiltersType, ChatMessage } from '@/types/chat';
 import { filterMessages } from '@/utils/chatParser';
+import { chatStorage } from '@/utils/storage';
 import FileUpload from '@/components/FileUpload';
 import SearchFilters from '@/components/SearchFilters';
 import ChatView from '@/components/ChatView';
@@ -25,48 +26,29 @@ export default function Home() {
     return filterMessages(chatData.messages, filters);
   }, [chatData, filters]);
 
-  const handleChatParsed = useCallback((data: ParsedChatData) => {
+  const handleChatParsed = useCallback(async (data: ParsedChatData) => {
     console.log('handleChatParsed called with data:', data);
     setChatData(data);
-    // Store only essential analytics data in localStorage to avoid quota issues
-    console.log('Storing analytics data...');
+    
+    // Store chat data using the new storage system
+    console.log('Storing chat data...');
     try {
-      const analyticsData = {
-        totalMessages: data.totalMessages,
-        participants: data.participants,
+      const dataToStore = {
+        ...data,
+        messages: data.messages.map(msg => ({
+          ...msg,
+          timestamp: msg.timestamp.toISOString()
+        })),
         dateRange: {
           start: data.dateRange.start.toISOString(),
           end: data.dateRange.end.toISOString()
-        },
-        // Store only message metadata for analytics, not full content
-        messages: data.messages.map(msg => ({
-          timestamp: msg.timestamp.toISOString(),
-          sender: msg.sender,
-          content: msg.content.substring(0, 100), // Limit content length
-          isOwnMessage: msg.isOwnMessage
-        }))
+        }
       };
-      console.log('Analytics data to store:', analyticsData);
-      localStorage.setItem('chatData', JSON.stringify(analyticsData));
-      console.log('Stored in localStorage:', localStorage.getItem('chatData'));
-      console.log('All localStorage keys after storage:', Object.keys(localStorage));
+      
+      await chatStorage.storeChatData(dataToStore);
+      console.log('Chat data stored successfully');
     } catch (error) {
       console.error('Error storing chat data:', error);
-      // Try storing with even less data if quota is still exceeded
-      try {
-        const minimalData = {
-          totalMessages: data.totalMessages,
-          participants: data.participants,
-          dateRange: {
-            start: data.dateRange.start.toISOString(),
-            end: data.dateRange.end.toISOString()
-          }
-        };
-        localStorage.setItem('chatData', JSON.stringify(minimalData));
-        console.log('Stored minimal data in localStorage');
-      } catch (minimalError) {
-        console.error('Error storing minimal data:', minimalError);
-      }
     }
   }, []);
 
