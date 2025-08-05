@@ -65,11 +65,22 @@ export default function ChatPage() {
     
     let messages = filterMessages(chatData.messages, filters);
     
+    // Debug: Log participant names and active filter
+    console.log(`🎯 Participants: ${chatData.participants.join(', ')}`);
+    console.log(`🎯 Active filter: ${activeFilter}`);
+    
     // Apply active filter (All or specific participant)
     if (activeFilter && activeFilter !== 'all') {
       console.log(`🔍 Filtering messages for: ${activeFilter}`);
-      messages = messages.filter(message => message.sender === activeFilter);
-      console.log(`📊 Filtered to ${messages.length} messages`);
+      const beforeCount = messages.length;
+      messages = messages.filter(message => {
+        const matches = message.sender === activeFilter;
+        if (!matches) {
+          console.log(`❌ Message from "${message.sender}" doesn't match "${activeFilter}"`);
+        }
+        return matches;
+      });
+      console.log(`📊 Filtered from ${beforeCount} to ${messages.length} messages`);
     } else {
       console.log(`🔍 Showing all messages (${messages.length} total)`);
     }
@@ -150,7 +161,10 @@ export default function ChatPage() {
             {/* Message Filter Tabs */}
             <div className="flex items-center space-x-2">
               <button
-                onClick={() => setActiveFilter?.('all')}
+                onClick={() => {
+                  console.log('🖱️ Clicked "All" filter');
+                  setActiveFilter('all');
+                }}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   activeFilter === 'all'
                     ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
@@ -162,7 +176,10 @@ export default function ChatPage() {
               {chatData.participants.map((participant) => (
                 <button
                   key={participant}
-                  onClick={() => setActiveFilter?.(participant)}
+                  onClick={() => {
+                    console.log(`🖱️ Clicked "${participant}" filter`);
+                    setActiveFilter(participant);
+                  }}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                     activeFilter === participant
                       ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
