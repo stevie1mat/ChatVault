@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Urbanist } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const urbanist = Urbanist({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-urbanist",
 });
 
 export const metadata: Metadata = {
@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body
-        className={`${inter.variable} antialiased h-full bg-gray-50 dark:bg-gray-900`}
+        className={`${urbanist.variable} antialiased h-full bg-gray-50 dark:bg-gray-900`}
       >
         {children}
       </body>
