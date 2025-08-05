@@ -11,9 +11,7 @@ export default function SharedSidebar({ chatData }: SharedSidebarProps) {
   const pathname = usePathname();
 
   const chatItems = [
-    { href: '/chat', label: 'Messages', icon: '💬' },
-    { href: '/chat/search', label: 'Search', icon: '🔍' },
-    { href: '/chat/filters', label: 'Filters', icon: '⚙️' },
+    { href: '/chat', label: 'Messages', icon: '💬' }
   ];
 
   const analyticsItems = [

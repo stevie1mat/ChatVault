@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo } from 'react';
 import { ParsedChatData } from '@/types/chat';
 import { chatStorage } from '@/utils/storage';
 import { filterMessages } from '@/utils/chatParser';
-import SearchFilters from '@/components/SearchFilters';
 import ChatView from '@/components/ChatView';
 
 export default function ChatPage() {
@@ -59,6 +58,14 @@ export default function ChatPage() {
     return filterMessages(chatData.messages, filters);
   }, [chatData, filters]);
 
+  const handleFilterChange = (key: string, value: any) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
+
+  const formatDate = (date: Date) => {
+    return date.toISOString().split('T')[0];
+  };
+
   if (!chatData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -77,35 +84,65 @@ export default function ChatPage() {
 
   return (
     <div className="space-y-8">
-      
-
-      {/* Search and Filters */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
-        <SearchFilters 
-          participants={chatData.participants}
-          dateRange={chatData.dateRange}
-          onFiltersChange={setFilters}
-        />
-      </div>
-
       {/* Messages Section */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-lg">
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          {/* Sender Filter Pills */}
-          <div className="flex items-center space-x-2">
-            {chatData.participants.map((participant) => (
-              <button
-                key={participant}
-                onClick={() => setFilters(prev => ({ ...prev, sender: participant }))}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  filters.sender === participant
-                    ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                }`}
-              >
-                {participant}
-              </button>
-            ))}
+          <div className="flex items-center justify-between">
+            {/* Sender Filter Pills */}
+            <div className="flex items-center space-x-2">
+              {chatData.participants.map((participant) => (
+                <button
+                  key={participant}
+                  onClick={() => setFilters(prev => ({ ...prev, sender: participant }))}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    filters.sender === participant
+                      ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  }`}
+                >
+                  {participant}
+                </button>
+              ))}
+            </div>
+
+            {/* Search Filters - Smaller and on the right */}
+            <div className="flex items-center space-x-3">
+              {/* Keyword Search */}
+              <div className="flex items-center space-x-2">
+                <input
+                  type="text"
+                  placeholder="Search messages..."
+                  value={filters.keyword}
+                  onChange={(e) => handleFilterChange('keyword', e.target.value)}
+                  className="w-32 px-3 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                />
+              </div>
+
+              {/* Date Range */}
+              <div className="flex items-center space-x-2">
+                <input
+                  type="date"
+                  min={formatDate(chatData.dateRange.start)}
+                  max={formatDate(chatData.dateRange.end)}
+                  value={filters.startDate ? formatDate(filters.startDate) : ''}
+                  onChange={(e) => handleFilterChange('startDate', e.target.value ? new Date(e.target.value) : null)}
+                  className="w-28 px-2 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                />
+              </div>
+
+              {/* Time Range */}
+              <div className="flex items-center space-x-2">
+                <input
+                  type="time"
+                  value={filters.timeRange?.start || ''}
+                  onChange={(e) => handleFilterChange('timeRange', {
+                    start: e.target.value,
+                    end: e.target.value
+                  })}
+                  className="w-20 px-2 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                />
+              </div>
+            </div>
           </div>
         </div>
 
