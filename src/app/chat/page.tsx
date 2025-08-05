@@ -50,6 +50,19 @@ export default function ChatPage() {
     };
 
     loadChatData();
+
+    // Cleanup function to clear data when component unmounts
+    return () => {
+      const clearData = async () => {
+        try {
+          await chatStorage.clearChatData();
+          console.log('Chat data cleared on page exit');
+        } catch (error) {
+          console.error('Error clearing chat data:', error);
+        }
+      };
+      clearData();
+    };
   }, []);
 
   // Filter messages based on current filters

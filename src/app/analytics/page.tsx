@@ -63,6 +63,19 @@ export default function AnalyticsOverviewPage() {
     };
 
     loadChatData();
+
+    // Cleanup function to clear data when component unmounts
+    return () => {
+      const clearData = async () => {
+        try {
+          await chatStorage.clearChatData();
+          console.log('Analytics data cleared on page exit');
+        } catch (error) {
+          console.error('Error clearing analytics data:', error);
+        }
+      };
+      clearData();
+    };
   }, []);
 
   const filteredMessages = useMemo(() => {

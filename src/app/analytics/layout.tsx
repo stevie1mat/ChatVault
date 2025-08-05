@@ -47,6 +47,19 @@ export default function AnalyticsLayout({
     };
 
     loadChatData();
+
+    // Cleanup function to clear data when component unmounts
+    return () => {
+      const clearData = async () => {
+        try {
+          await chatStorage.clearChatData();
+          console.log('Analytics layout data cleared on page exit');
+        } catch (error) {
+          console.error('Error clearing analytics layout data:', error);
+        }
+      };
+      clearData();
+    };
   }, []);
 
 
