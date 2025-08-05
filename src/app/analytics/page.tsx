@@ -340,9 +340,6 @@ export default function AnalyticsOverviewPage() {
     <div className="space-y-8">
       <div className="text-center space-y-6">
         <h2 className="text-4xl font-bold text-gray-900 dark:text-white">Analytics Overview</h2>
-        <p className="text-lg text-gray-600 dark:text-gray-400">
-          Comprehensive insights into your chat activity and patterns
-        </p>
       </div>
 
       {/* Key Metrics Grid */}
