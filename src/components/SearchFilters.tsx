@@ -2,14 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import type { SearchFilters } from '@/types/chat';
+import ExportButtons from './ExportButtons';
 
 interface SearchFiltersProps {
   participants: string[];
   dateRange: { start: Date; end: Date };
   onFiltersChange: (filters: SearchFilters) => void;
+  messages: any[]; // Add messages prop for export functionality
 }
 
-export default function SearchFilters({ participants, dateRange, onFiltersChange }: SearchFiltersProps) {
+export default function SearchFilters({ participants, dateRange, onFiltersChange, messages }: SearchFiltersProps) {
   const [filters, setFilters] = useState<SearchFilters>({
     keyword: '',
     startDate: null,
@@ -142,6 +144,11 @@ export default function SearchFilters({ participants, dateRange, onFiltersChange
             </div>
           </div>
         )}
+
+        {/* Export Buttons */}
+        <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
+          <ExportButtons messages={messages} />
+        </div>
       </div>
     </div>
   );

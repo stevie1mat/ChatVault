@@ -52,24 +52,6 @@ export default function Home() {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-4">
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">ChatVault</h1>
-                {chatData && (
-                  <div className="flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
-                    <div className="flex items-center space-x-2">
-                      <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-full text-sm font-medium">
-                        {chatData.totalMessages} messages
-                      </span>
-                      <span>•</span>
-                      <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full text-sm font-medium">
-                        {chatData.participants.length} participants
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 rounded-full text-sm font-medium">
-                        {chatData.dateRange.start.toLocaleDateString()} - {chatData.dateRange.end.toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -219,8 +201,8 @@ export default function Home() {
                     participants={chatData.participants}
                     dateRange={chatData.dateRange}
                     onFiltersChange={handleFiltersChange}
+                    messages={filteredMessages}
                   />
-                  <ExportButtons messages={filteredMessages} />
                 </div>
               </div>
 
@@ -238,6 +220,11 @@ export default function Home() {
                           <p className="text-sm text-gray-500 dark:text-gray-400">
                             {showAnalytics ? 'Chat insights and statistics' : `${filteredMessages.length} messages found`}
                           </p>
+                          {!showAnalytics && chatData && (
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                              {chatData.dateRange.start.toLocaleDateString()} - {chatData.dateRange.end.toLocaleDateString()}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center space-x-3">
