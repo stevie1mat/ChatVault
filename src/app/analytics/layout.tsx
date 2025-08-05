@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import { ParsedChatData } from '@/types/chat';
 import { chatStorage } from '@/utils/storage';
 import ThemeToggle from '@/components/ThemeToggle';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import SharedSidebar from '@/components/SharedSidebar';
 
 export default function AnalyticsLayout({
   children,
@@ -13,7 +12,6 @@ export default function AnalyticsLayout({
   children: React.ReactNode;
 }) {
   const [chatData, setChatData] = useState<ParsedChatData | null>(null);
-  const pathname = usePathname();
 
   // Get chat data from storage
   useEffect(() => {
@@ -51,14 +49,7 @@ export default function AnalyticsLayout({
     loadChatData();
   }, []);
 
-  const navItems = [
-    { href: '/analytics', label: 'Overview', icon: '📊' },
-    { href: '/analytics/activity', label: 'Activity Patterns', icon: '📈' },
-    { href: '/analytics/activity-charts', label: 'Activity Charts', icon: '📊' },
-    { href: '/analytics/detailed', label: 'Response Time', icon: '⏱️' },
-    { href: '/analytics/special-occasions', label: 'Special Occasions', icon: '🎉' },
-  
-  ];
+
 
   if (!chatData) {
     return (
@@ -146,37 +137,7 @@ export default function AnalyticsLayout({
 
       <div className="flex">
         {/* Sidebar */}
-        <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 min-h-screen">
-          <div className="p-6">
-            <div className="mb-6">
-              <Link
-                href="/chat"
-                className="flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
-              >
-                <span className="text-lg">💬</span>
-                <span>Chat</span>
-              </Link>
-            </div>
-            
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Analytics</h2>
-            <nav className="space-y-2">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                    pathname === item.href
-                      ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
-                  }`}
-                >
-                  <span className="text-lg">{item.icon}</span>
-                  <span>{item.label}</span>
-                </Link>
-              ))}
-            </nav>
-          </div>
-        </div>
+        <SharedSidebar chatData={chatData} />
 
         {/* Main Content */}
         <div className="flex-1">
