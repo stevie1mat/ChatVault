@@ -8,14 +8,9 @@ import ChatView from '@/components/ChatView';
 import AISearch from '@/components/AISearch';
 import AISearchResults from '@/components/AISearchResults';
 
-interface ChatPageProps {
-  activeFilter?: string;
-  setActiveFilter?: (filter: string) => void;
-  chatData?: ParsedChatData | null;
-}
-
-export default function ChatPage({ activeFilter = 'all', setActiveFilter, chatData: layoutChatData }: ChatPageProps) {
+export default function ChatPage() {
   const [chatData, setChatData] = useState<ParsedChatData | null>(null);
+  const [activeFilter, setActiveFilter] = useState<string>('all');
   const [filters, setFilters] = useState({
     keyword: '',
     startDate: null as Date | null,
@@ -28,13 +23,8 @@ export default function ChatPage({ activeFilter = 'all', setActiveFilter, chatDa
   const [highlightedMessageId, setHighlightedMessageId] = useState<string | undefined>(undefined);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // Load chat data from storage or use layout data
+  // Load chat data from storage
   useEffect(() => {
-    if (layoutChatData) {
-      setChatData(layoutChatData);
-      return;
-    }
-
     const loadChatData = async () => {
       try {
         const storedData = await chatStorage.getChatData();
@@ -67,7 +57,7 @@ export default function ChatPage({ activeFilter = 'all', setActiveFilter, chatDa
     };
 
     loadChatData();
-  }, [layoutChatData]);
+  }, []);
 
   // Filter messages based on current filters and active filter
   const filteredMessages = useMemo(() => {
@@ -77,7 +67,11 @@ export default function ChatPage({ activeFilter = 'all', setActiveFilter, chatDa
     
     // Apply active filter (All or specific participant)
     if (activeFilter && activeFilter !== 'all') {
+      console.log(`🔍 Filtering messages for: ${activeFilter}`);
       messages = messages.filter(message => message.sender === activeFilter);
+      console.log(`📊 Filtered to ${messages.length} messages`);
+    } else {
+      console.log(`🔍 Showing all messages (${messages.length} total)`);
     }
     
     return messages;
@@ -153,14 +147,24 @@ export default function ChatPage({ activeFilter = 'all', setActiveFilter, chatDa
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-lg">
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
-            {/* Sender Filter Pills */}
+            {/* Message Filter Tabs */}
             <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setActiveFilter?.('all')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  activeFilter === 'all'
+                    ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                All
+              </button>
               {chatData.participants.map((participant) => (
                 <button
                   key={participant}
-                  onClick={() => setFilters(prev => ({ ...prev, sender: participant }))}
+                  onClick={() => setActiveFilter?.(participant)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    filters.sender === participant
+                    activeFilter === participant
                       ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
                       : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                   }`}
