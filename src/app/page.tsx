@@ -6,6 +6,7 @@ import { filterMessages } from '@/utils/chatParser';
 import FileUpload from '@/components/FileUpload';
 import SearchFilters from '@/components/SearchFilters';
 import ChatView from '@/components/ChatView';
+import AnalyticsDashboard from '@/components/AnalyticsDashboard';
 import ExportButtons from '@/components/ExportButtons';
 import ThemeToggle from '@/components/ThemeToggle';
 
@@ -19,6 +20,7 @@ export default function Home() {
     sender: null
   });
   const [showHowToDialog, setShowHowToDialog] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
 
   const filteredMessages = useMemo(() => {
     if (!chatData) return [];
@@ -49,7 +51,7 @@ export default function Home() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-4">
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">WhatsApp Chat Parser</h1>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white">ChatVault</h1>
                 {chatData && (
                   <div className="flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
                     <div className="flex items-center space-x-2">
@@ -79,7 +81,18 @@ export default function Home() {
                   How to?
                 </button>
               )}
-              {chatData && <ExportButtons messages={filteredMessages} />}
+              {chatData && (
+                <button
+                  onClick={() => setShowAnalytics(!showAnalytics)}
+                  className={`text-sm px-3 py-1 rounded-lg transition-colors ${
+                    showAnalytics
+                      ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300'
+                      : 'text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  📊 Analytics
+                </button>
+              )}
               <a
                 href="https://github.com/stevie1mat/ChatVault"
                 target="_blank"
@@ -148,24 +161,22 @@ export default function Home() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {!chatData ? (
-          // Upload screen with clean design
-          <div className="space-y-16">
-            {/* Hero Section */}
+          <div className="space-y-20">
             <div className="text-center space-y-8">
               <div className="space-y-6">
-                <h2 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white">Search Your WhatsApp Chat</h2>
-                <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">Upload your WhatsApp chat export and explore your conversations with powerful search, filtering, and analysis tools.</p>
+                <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Search Your ChatVault
+                </h2>
+                <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                  Upload your WhatsApp chat export and explore your conversations with powerful search, filtering, and analysis tools.
+                </p>
               </div>
             </div>
-
-            {/* Upload Section */}
             <div className="max-w-2xl mx-auto">
               <FileUpload onChatParsed={handleChatParsed} />
             </div>
-
-            {/* Features Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              <div className="text-center space-y-4">
+              <div className="text-center space-y-4 p-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-3xl border border-blue-100 dark:border-blue-800/30">
                 <div className="text-4xl mb-4">🔍</div>
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                   Smart Search
@@ -175,7 +186,7 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="text-center space-y-4">
+              <div className="text-center space-y-4 p-8 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-3xl border border-purple-100 dark:border-purple-800/30">
                 <div className="text-4xl mb-4">📊</div>
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                   Chat Analytics
@@ -185,7 +196,7 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="text-center space-y-4">
+              <div className="text-center space-y-4 p-8 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-3xl border border-green-100 dark:border-green-800/30">
                 <div className="text-4xl mb-4">📤</div>
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                   Export & Share
@@ -197,65 +208,90 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          // Chat view with clean design
+          // Chat view with enhanced design
           <div className="space-y-8">
             {/* Main Content Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
               {/* Filters sidebar */}
               <div className="lg:col-span-1">
-                <SearchFilters
-                  participants={chatData.participants}
-                  dateRange={chatData.dateRange}
-                  onFiltersChange={handleFiltersChange}
-                />
+                <div className="sticky top-8 space-y-6">
+                  <SearchFilters
+                    participants={chatData.participants}
+                    dateRange={chatData.dateRange}
+                    onFiltersChange={handleFiltersChange}
+                  />
+                  <ExportButtons messages={filteredMessages} />
+                </div>
               </div>
 
               {/* Chat view */}
               <div className="lg:col-span-3">
-                <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 h-[600px] flex flex-col overflow-hidden">
+                <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl h-[700px] flex flex-col overflow-hidden">
                   {/* Chat header */}
-                  <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
+                  <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
                         <div>
                           <h4 className="text-xl font-semibold text-gray-900 dark:text-white">
-                            Messages
+                            {showAnalytics ? 'Analytics' : 'Messages'}
                           </h4>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {filteredMessages.length} messages found
+                            {showAnalytics ? 'Chat insights and statistics' : `${filteredMessages.length} messages found`}
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-3">
+                        {!showAnalytics && (
+                          <>
+                            <button
+                              onClick={() => handleFiltersChange({ ...filters, sender: null })}
+                              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                                !filters.sender
+                                  ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+                                  : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                              }`}
+                            >
+                              All
+                            </button>
+                            {chatData.participants.map((participant) => (
+                              <button
+                                key={participant}
+                                onClick={() => handleFiltersChange({ ...filters, sender: filters.sender === participant ? null : participant })}
+                                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                                  filters.sender === participant
+                                    ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+                                    : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                                }`}
+                              >
+                                {participant}
+                              </button>
+                            ))}
+                          </>
+                        )}
                         <button
-                          onClick={() => handleFiltersChange({ ...filters, sender: null })}
-                          className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                            !filters.sender 
-                              ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 font-medium' 
+                          onClick={() => setShowAnalytics(!showAnalytics)}
+                          className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                            showAnalytics
+                              ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/25'
                               : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
                           }`}
                         >
-                          All
+                          {showAnalytics ? '📱 Messages' : '📊 Analytics'}
                         </button>
-                        {chatData.participants.map((participant) => (
-                          <button
-                            key={participant}
-                            onClick={() => handleFiltersChange({ ...filters, sender: filters.sender === participant ? null : participant })}
-                            className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                              filters.sender === participant 
-                                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 font-medium' 
-                                : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
-                            }`}
-                          >
-                            {participant}
-                          </button>
-                        ))}
                       </div>
                     </div>
                   </div>
 
-                  {/* Messages */}
-                  <ChatView messages={filteredMessages} />
+                  {/* Content */}
+                  <div className="flex-1 overflow-hidden">
+                    {showAnalytics ? (
+                      <div className="h-full overflow-y-auto">
+                        <AnalyticsDashboard messages={filteredMessages} participants={chatData.participants} />
+                      </div>
+                    ) : (
+                      <ChatView messages={filteredMessages} />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

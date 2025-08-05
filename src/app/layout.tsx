@@ -8,8 +8,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "WhatsApp Chat Parser",
-  description: "Parse and view your WhatsApp chat exports with search and filtering capabilities",
+  title: "ChatVault - Search and Analyze Your WhatsApp Chats",
+  description: "Upload your WhatsApp chat exports and explore conversations with powerful search, filtering, and analytics tools.",
 };
 
 export default function RootLayout({

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { parseWhatsAppChat } from '@/utils/chatParser';
 import { ParsedChatData } from '@/types/chat';
 
@@ -12,6 +12,8 @@ export default function FileUpload({ onChatParsed }: FileUploadProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const dropRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = useCallback(async (file: File) => {
     if (!file.name.endsWith('.txt')) {
@@ -60,7 +62,7 @@ export default function FileUpload({ onChatParsed }: FileUploadProps) {
     }
   }, [handleFile]);
 
-  const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
       handleFile(files[0]);
@@ -68,80 +70,65 @@ export default function FileUpload({ onChatParsed }: FileUploadProps) {
   }, [handleFile]);
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full">
       <div
-        className={`border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300 ${
+        ref={dropRef}
+        className={`relative border-2 border-dashed rounded-3xl p-12 text-center transition-all duration-300 ${
           isDragOver
-            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-            : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
-        } ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
+            ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20 scale-105 shadow-lg'
+            : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 hover:border-gray-400 dark:hover:border-gray-500'
+        }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
         <div className="space-y-6">
-          {/* Icon */}
-          <div className="flex justify-center">
-            <div className={`transition-transform duration-300 ${isDragOver ? 'scale-110' : ''}`}>
-              <div className="text-6xl mb-4">📱</div>
-            </div>
-          </div>
-
-          {/* Text content */}
+          <div className="text-6xl mb-4">📱</div>
           <div className="space-y-4">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-              {isDragOver ? 'Drop your file here!' : 'Upload WhatsApp Chat'}
+              Upload ChatVault
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-lg">
-              {isDragOver 
-                ? 'Release to upload your chat file'
-                : 'Drag and drop your WhatsApp chat export (.txt file) here, or click to browse'
-              }
+            <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+              Drag and drop your WhatsApp chat export file here, or click to browse
             </p>
-            
-            {/* File input */}
-            <input
-              type="file"
-              accept=".txt"
-              onChange={handleFileInput}
-              className="hidden"
-              id="file-upload"
-              disabled={isLoading}
-            />
-            
-            {/* Upload button */}
-            <label
-              htmlFor="file-upload"
-              className="inline-flex items-center px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/50 focus:ring-offset-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <span className="mr-2">📁</span>
-                  Choose File
-                </>
-              )}
-            </label>
           </div>
-
-          {/* File info */}
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            <p>Supports WhatsApp chat exports (.txt files)</p>
-            <p>Your data stays private - no uploads to servers</p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              Choose File
+            </button>
+            <div className="text-sm text-gray-500 dark:text-gray-400">
+              Supports .txt files
+            </div>
           </div>
         </div>
+        
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".txt"
+          onChange={handleFileSelect}
+          className="hidden"
+        />
       </div>
 
-      {/* Error message */}
+      {isLoading && (
+        <div className="mt-6 text-center">
+          <div className="inline-flex items-center space-x-2 text-blue-600 dark:text-blue-400">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+            <span>Parsing chat file...</span>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div className="mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
-          <div className="flex items-center">
-            <span className="text-red-500 mr-2">⚠️</span>
-            <p className="text-red-800 dark:text-red-200">{error}</p>
+          <div className="flex items-center space-x-2 text-red-600 dark:text-red-400">
+            <span className="text-lg">⚠️</span>
+            <span>{error}</span>
           </div>
         </div>
       )}

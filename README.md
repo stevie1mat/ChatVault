@@ -1,8 +1,14 @@
-# WhatsApp Chat Parser
+# ChatVault
 
-A modern Next.js web application for parsing and viewing WhatsApp chat exports with advanced search and filtering capabilities.
+A modern web application for searching, filtering, and analyzing WhatsApp chat exports. Upload your `.txt` chat files and explore conversations with powerful search tools, date filtering, and comprehensive analytics.
 
-## Features
+## 📖 Description
+
+ChatVault is a powerful web application that helps you explore and analyze your WhatsApp conversations. Simply upload your exported chat files and gain insights into your messaging patterns, search through conversations, and export filtered results.
+
+### Key Capabilities:
+
+## ✨ Features
 
 - 📱 **Chat Parsing**: Parse WhatsApp chat exports (.txt files) with standard formatting
 - 🔍 **Search & Filter**: Real-time search by keyword, date range, time range, and sender

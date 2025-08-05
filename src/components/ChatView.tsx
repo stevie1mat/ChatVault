@@ -47,7 +47,7 @@ export default function ChatView({ messages }: ChatViewProps) {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div className="h-full overflow-y-auto p-4 space-y-4">
       {messageGroups.map((group, groupIndex) => (
         <div key={groupIndex} className="space-y-2">
           {/* Date separator */}
