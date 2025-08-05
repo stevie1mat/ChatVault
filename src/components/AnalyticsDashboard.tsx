@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { ChatMessage } from '@/types/chat';
 
 interface AnalyticsDashboardProps {
@@ -37,6 +37,19 @@ interface AnalyticsData {
 }
 
 export default function AnalyticsDashboard({ messages, participants }: AnalyticsDashboardProps) {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedMessages, setSelectedMessages] = useState<string[]>([]);
+
+  const handleCategoryClick = (category: string, messages: string[]) => {
+    setSelectedCategory(category);
+    setSelectedMessages(messages);
+  };
+
+  const closeModal = () => {
+    setSelectedCategory(null);
+    setSelectedMessages([]);
+  };
+
   const analytics = useMemo((): AnalyticsData => {
     if (messages.length === 0) {
       return {
@@ -365,7 +378,10 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
           <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Special Occasions</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Wishes */}
-            <div className="bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 rounded-2xl p-6 border border-pink-100 dark:border-pink-800/30">
+            <button
+              onClick={() => handleCategoryClick('Wishes', analytics.specialOccasions.wishes.messages)}
+              className="bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 rounded-2xl p-6 border border-pink-100 dark:border-pink-800/30 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer text-left"
+            >
               <div className="text-2xl mb-2">🎉</div>
               <div className="text-2xl font-bold text-pink-600 dark:text-pink-400">{analytics.specialOccasions.wishes.count}</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Wishes</div>
@@ -374,10 +390,13 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
                   "{analytics.specialOccasions.wishes.messages[0].substring(0, 30)}..."
                 </div>
               )}
-            </div>
+            </button>
 
             {/* Congratulations */}
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-6 border border-green-100 dark:border-green-800/30">
+            <button
+              onClick={() => handleCategoryClick('Congratulations', analytics.specialOccasions.congratulations.messages)}
+              className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-6 border border-green-100 dark:border-green-800/30 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer text-left"
+            >
               <div className="text-2xl mb-2">🏆</div>
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">{analytics.specialOccasions.congratulations.count}</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Congratulations</div>
@@ -386,10 +405,13 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
                   "{analytics.specialOccasions.congratulations.messages[0].substring(0, 30)}..."
                 </div>
               )}
-            </div>
+            </button>
 
             {/* Festivals */}
-            <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-2xl p-6 border border-orange-100 dark:border-orange-800/30">
+            <button
+              onClick={() => handleCategoryClick('Festivals', analytics.specialOccasions.festivals.messages)}
+              className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-2xl p-6 border border-orange-100 dark:border-orange-800/30 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer text-left"
+            >
               <div className="text-2xl mb-2">🎊</div>
               <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{analytics.specialOccasions.festivals.count}</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Festivals</div>
@@ -398,10 +420,13 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
                   "{analytics.specialOccasions.festivals.messages[0].substring(0, 30)}..."
                 </div>
               )}
-            </div>
+            </button>
 
             {/* Special Days */}
-            <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800/30">
+            <button
+              onClick={() => handleCategoryClick('Special Days', analytics.specialOccasions.specialDays.messages)}
+              className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800/30 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer text-left"
+            >
               <div className="text-2xl mb-2">📅</div>
               <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{analytics.specialOccasions.specialDays.count}</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Special Days</div>
@@ -410,10 +435,68 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
                   "{analytics.specialOccasions.specialDays.messages[0].substring(0, 30)}..."
                 </div>
               )}
-            </div>
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Special Occasions Modal */}
+      {selectedCategory && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-4xl w-full max-h-[80vh] overflow-hidden shadow-xl">
+            {/* Modal Header */}
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <span className="text-2xl">
+                    {selectedCategory === 'Wishes' ? '🎉' : 
+                     selectedCategory === 'Congratulations' ? '🏆' : 
+                     selectedCategory === 'Festivals' ? '🎊' : '📅'}
+                  </span>
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    {selectedCategory} Messages ({selectedMessages.length})
+                  </h3>
+                </div>
+                <button
+                  onClick={closeModal}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 overflow-y-auto max-h-[60vh]">
+              {selectedMessages.length === 0 ? (
+                <div className="text-center text-gray-500 dark:text-gray-400 py-8">
+                  <div className="text-4xl mb-4">📭</div>
+                  <p>No {selectedCategory.toLowerCase()} messages found</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {selectedMessages.map((message, index) => (
+                    <div key={index} className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-gray-900 dark:text-white leading-relaxed">
+                            "{message}"
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
