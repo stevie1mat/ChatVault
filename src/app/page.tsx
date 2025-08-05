@@ -124,8 +124,10 @@ export default function Home() {
                   </button>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Baccha</span>
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Steven</span>
+                  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Sarah</span>
+                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Alex</span>
+                  <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Mike</span>
+                  <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">Lisa</span>
                 </div>
               </div>
 
@@ -133,37 +135,61 @@ export default function Home() {
               <div className="space-y-3 mb-6">
                 <div className="flex items-start space-x-3">
                   <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                    B
+                    S
                   </div>
                   <div className="flex-1">
                     <div className="bg-blue-100 rounded-2xl rounded-tl-md px-4 py-2 max-w-xs">
-                      <p className="text-sm text-gray-900">Sorry... Mei so gayi</p>
+                      <p className="text-sm text-gray-900">Hey! How's the project going?</p>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">07:52 PM</p>
+                    <p className="text-xs text-gray-500 mt-1">10:23 AM</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                    A
+                  </div>
+                  <div className="flex-1">
+                    <div className="bg-green-100 rounded-2xl rounded-tl-md px-4 py-2 max-w-xs">
+                      <p className="text-sm text-gray-900">Great progress! Almost done with the design phase</p>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">10:25 AM</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                    M
+                  </div>
+                  <div className="flex-1">
+                    <div className="bg-purple-100 rounded-2xl rounded-tl-md px-4 py-2 max-w-xs">
+                      <p className="text-sm text-gray-900">Perfect! Let's schedule a review meeting for tomorrow</p>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">10:28 AM</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start space-x-3">
                   <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                    B
+                    S
                   </div>
                   <div className="flex-1">
                     <div className="bg-blue-100 rounded-2xl rounded-tl-md px-4 py-2 max-w-xs">
-                      <p className="text-sm text-gray-900">Kismat mere se zyaada accha nikla toh?</p>
+                      <p className="text-sm text-gray-900">Sounds good! I'll prepare the presentation</p>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">07:53 PM</p>
+                    <p className="text-xs text-gray-500 mt-1">10:30 AM</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                    B
+                  <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                    L
                   </div>
                   <div className="flex-1">
-                    <div className="bg-blue-100 rounded-2xl rounded-tl-md px-4 py-2 max-w-xs">
-                      <p className="text-sm text-gray-900">We said na.. this is just our time to know each other... Baaki aage kya hoga.. I am sure God will make a way..</p>
+                    <div className="bg-orange-100 rounded-2xl rounded-tl-md px-4 py-2 max-w-xs">
+                      <p className="text-sm text-gray-900">Don't forget to include the analytics data!</p>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">08:13 PM</p>
+                    <p className="text-xs text-gray-500 mt-1">10:32 AM</p>
                   </div>
                 </div>
               </div>
