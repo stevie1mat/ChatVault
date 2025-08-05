@@ -155,6 +155,14 @@ export default function ChatPage() {
                   className="w-20 px-2 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
+
+              {/* Analytics Button */}
+              <a
+                href="/chat/analytics"
+                className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                View Analytics
+              </a>
             </div>
           </div>
         </div>

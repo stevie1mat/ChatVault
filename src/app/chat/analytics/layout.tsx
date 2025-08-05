@@ -13,7 +13,7 @@ export default function AnalyticsLayout({
 }) {
   const [chatData, setChatData] = useState<ParsedChatData | null>(null);
 
-  // Get chat data from storage
+  // Get chat data from storage (inherited from chat layout)
   useEffect(() => {
     const loadChatData = async () => {
       try {
@@ -47,22 +47,7 @@ export default function AnalyticsLayout({
     };
 
     loadChatData();
-
-    // Cleanup function to clear data when component unmounts
-    return () => {
-      const clearData = async () => {
-        try {
-          await chatStorage.clearChatData();
-          console.log('Analytics layout data cleared on page exit');
-        } catch (error) {
-          console.error('Error clearing analytics layout data:', error);
-        }
-      };
-      clearData();
-    };
   }, []);
-
-
 
   if (!chatData) {
     return (
@@ -74,7 +59,7 @@ export default function AnalyticsLayout({
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">ChatVault Analytics</h1>
               </div>
               <div className="flex items-center space-x-4">
-                <a href="/" className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-3 py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
+                <a href="/chat" className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-3 py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
                   ← Back to Chat
                 </a>
                 <a href="https://github.com/stevie1mat/ChatVault" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" title="View on GitHub">
@@ -134,7 +119,7 @@ export default function AnalyticsLayout({
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <a href="/" className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-3 py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
+              <a href="/chat" className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-3 py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
                 ← Back to Chat
               </a>
               <a href="https://github.com/stevie1mat/ChatVault" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" title="View on GitHub">
