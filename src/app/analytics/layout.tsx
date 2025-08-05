@@ -57,8 +57,7 @@ export default function AnalyticsLayout({
     { href: '/analytics/activity-charts', label: 'Activity Charts', icon: '📊' },
     { href: '/analytics/detailed', label: 'Response Time', icon: '⏱️' },
     { href: '/analytics/special-occasions', label: 'Special Occasions', icon: '🎉' },
-    { href: '/analytics/response-times', label: 'Response Times', icon: '⏱️' },
-    { href: '/analytics/message-stats', label: 'Message Stats', icon: '💬' },
+  
   ];
 
   if (!chatData) {
