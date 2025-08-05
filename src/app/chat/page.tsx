@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { ParsedChatData, SearchFiltersType } from '@/types/chat';
+import { ParsedChatData } from '@/types/chat';
 import { chatStorage } from '@/utils/storage';
 import { filterMessages } from '@/utils/chatParser';
 import SearchFilters from '@/components/SearchFilters';
@@ -9,12 +9,12 @@ import ChatView from '@/components/ChatView';
 
 export default function ChatPage() {
   const [chatData, setChatData] = useState<ParsedChatData | null>(null);
-  const [filters, setFilters] = useState<SearchFiltersType>({
+  const [filters, setFilters] = useState({
     keyword: '',
-    startDate: null,
-    endDate: null,
-    timeRange: null,
-    sender: 'all'
+    startDate: null as Date | null,
+    endDate: null as Date | null,
+    timeRange: null as { start: string; end: string } | null,
+    sender: null as string | null
   });
 
   // Load chat data from storage
@@ -77,37 +77,22 @@ export default function ChatPage() {
 
   return (
     <div className="space-y-8">
-      <div className="text-left space-y-6">
-        <h2 className="text-4xl font-bold text-gray-900 dark:text-white">Messages</h2>
-      </div>
+      
 
       {/* Search and Filters */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
         <SearchFilters 
-          filters={filters} 
-          onFiltersChange={setFilters}
           participants={chatData.participants}
           dateRange={chatData.dateRange}
+          onFiltersChange={setFilters}
         />
       </div>
 
       {/* Messages Section */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-lg">
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Messages</h3>
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                {filteredMessages.length} of {chatData.totalMessages} messages found
-              </span>
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              {chatData.dateRange.start.toLocaleDateString()} - {chatData.dateRange.end.toLocaleDateString()}
-            </div>
-          </div>
-          
           {/* Sender Filter Pills */}
-          <div className="flex items-center space-x-2 mt-4">
+          <div className="flex items-center space-x-2">
             <button
               onClick={() => setFilters(prev => ({ ...prev, sender: 'all' }))}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
@@ -135,7 +120,7 @@ export default function ChatPage() {
         </div>
 
         {/* Chat Messages */}
-        <div className="h-96 overflow-y-auto">
+        <div className="h-[600px] overflow-y-auto">
           <ChatView messages={filteredMessages} />
         </div>
       </div>
