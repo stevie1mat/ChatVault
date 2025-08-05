@@ -7,7 +7,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-export default function AnalyticsLayout({
+export default function ChatLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -52,12 +52,9 @@ export default function AnalyticsLayout({
   }, []);
 
   const navItems = [
-    { href: '/analytics', label: 'Overview', icon: '📊' },
-    { href: '/analytics/activity', label: 'Activity Patterns', icon: '📈' },
-    { href: '/analytics/activity-charts', label: 'Activity Charts', icon: '📊' },
-    { href: '/analytics/detailed', label: 'Response Time', icon: '⏱️' },
-    { href: '/analytics/special-occasions', label: 'Special Occasions', icon: '🎉' },
-  
+    { href: '/chat', label: 'Messages', icon: '💬' },
+    { href: '/chat/search', label: 'Search', icon: '🔍' },
+    { href: '/chat/filters', label: 'Filters', icon: '⚙️' },
   ];
 
   if (!chatData) {
@@ -67,11 +64,11 @@ export default function AnalyticsLayout({
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center space-x-4">
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">ChatVault Analytics</h1>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white">ChatVault</h1>
               </div>
               <div className="flex items-center space-x-4">
                 <a href="/" className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-3 py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
-                  ← Back to Chat
+                  ← Back to Upload
                 </a>
                 <a href="https://github.com/stevie1mat/ChatVault" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" title="View on GitHub">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -88,10 +85,10 @@ export default function AnalyticsLayout({
           <div className="text-center space-y-8">
             <div className="space-y-6">
               <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Analytics Dashboard
+                Chat View
               </h2>
               <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-                No chat data available. Please upload a chat file on the main page to view analytics.
+                No chat data available. Please upload a chat file on the main page to view messages.
               </p>
             </div>
             <div className="flex justify-center">
@@ -111,7 +108,7 @@ export default function AnalyticsLayout({
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">ChatVault Analytics</h1>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">ChatVault</h1>
               <div className="flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
                 <div className="flex items-center space-x-2">
                   <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-full text-sm font-medium">
@@ -131,7 +128,7 @@ export default function AnalyticsLayout({
             </div>
             <div className="flex items-center space-x-4">
               <a href="/" className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-3 py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
-                ← Back to Chat
+                ← Back to Upload
               </a>
               <a href="https://github.com/stevie1mat/ChatVault" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" title="View on GitHub">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -150,15 +147,15 @@ export default function AnalyticsLayout({
           <div className="p-6">
             <div className="mb-6">
               <Link
-                href="/chat"
+                href="/"
                 className="flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
-                <span className="text-lg">💬</span>
-                <span>Chat</span>
+                <span className="text-lg">📤</span>
+                <span>Upload</span>
               </Link>
             </div>
             
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Analytics</h2>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Chat</h2>
             <nav className="space-y-2">
               {navItems.map((item) => (
                 <Link

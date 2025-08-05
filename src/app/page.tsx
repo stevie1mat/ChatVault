@@ -85,14 +85,19 @@ export default function Home() {
                 </button>
               )}
               {chatData && (
+                <a href="/chat" className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-3 py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
+                  💬 Chat
+                </a>
+              )}
+              {chatData && (
                 <a href="/analytics" className="text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 px-3 py-1 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors">
                   📊 Analytics
                 </a>
               )}
               <a
                 href="https://github.com/stevie1mat/ChatVault"
-                target="_blank"
-                rel="noopener noreferrer"
+            target="_blank"
+            rel="noopener noreferrer"
                 className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
                 title="View on GitHub"
               >
@@ -122,8 +127,8 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-            </div>
-            
+      </div>
+
             <div className="space-y-4 text-gray-600 dark:text-gray-400">
               <div className="flex items-start space-x-4">
                 <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">1</span>
@@ -141,8 +146,8 @@ export default function Home() {
                 <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">4</span>
                 <p>Upload the file here and start exploring!</p>
               </div>
-            </div>
-            
+      </div>
+
             <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
               <button
                 onClick={() => setShowHowToDialog(false)}
@@ -162,7 +167,7 @@ export default function Home() {
               <div className="space-y-6">
                 <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Search Your ChatVault
-                </h2>
+          </h2>
                 <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
                   Upload your WhatsApp chat export and explore your conversations with powerful search, filtering, and analysis tools.
                 </p>
