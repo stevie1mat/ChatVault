@@ -18,6 +18,7 @@ export default function Home() {
     timeRange: null,
     sender: null
   });
+  const [showHowToDialog, setShowHowToDialog] = useState(false);
 
   const filteredMessages = useMemo(() => {
     if (!chatData) return [];
@@ -64,12 +65,69 @@ export default function Home() {
               )}
             </div>
             <div className="flex items-center space-x-4">
+              {!chatData && (
+                <button
+                  onClick={() => setShowHowToDialog(true)}
+                  className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-3 py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+                >
+                  How to?
+                </button>
+              )}
               {chatData && <ExportButtons messages={filteredMessages} />}
               <ThemeToggle />
             </div>
           </div>
         </div>
       </header>
+
+      {/* How to Dialog */}
+      {showHowToDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6 shadow-xl">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                How to Export from WhatsApp
+              </h3>
+              <button
+                onClick={() => setShowHowToDialog(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="space-y-4 text-gray-600 dark:text-gray-400">
+              <div className="flex items-start space-x-4">
+                <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">1</span>
+                <p>Open the chat you want to export in WhatsApp</p>
+              </div>
+              <div className="flex items-start space-x-4">
+                <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">2</span>
+                <p>Tap the chat name at the top → More options → Export chat</p>
+              </div>
+              <div className="flex items-start space-x-4">
+                <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">3</span>
+                <p>Choose "Without Media" to get a .txt file</p>
+              </div>
+              <div className="flex items-start space-x-4">
+                <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">4</span>
+                <p>Upload the file here and start exploring!</p>
+              </div>
+            </div>
+            
+            <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <button
+                onClick={() => setShowHowToDialog(false)}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Got it!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {!chatData ? (
@@ -123,31 +181,6 @@ export default function Home() {
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                   Export filtered conversations in multiple formats for backup or analysis.
                 </p>
-              </div>
-            </div>
-
-            {/* Instructions */}
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8 max-w-2xl mx-auto">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 text-center">
-                How to Export from WhatsApp
-              </h3>
-              <div className="space-y-4 text-gray-600 dark:text-gray-400">
-                <div className="flex items-start space-x-4">
-                  <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">1</span>
-                  <p>Open the chat you want to export in WhatsApp</p>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">2</span>
-                  <p>Tap the chat name at the top → More options → Export chat</p>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">3</span>
-                  <p>Choose "Without Media" to get a .txt file</p>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">4</span>
-                  <p>Upload the file here and start exploring!</p>
-                </div>
               </div>
             </div>
           </div>
