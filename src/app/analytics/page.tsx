@@ -21,7 +21,12 @@ export default function AnalyticsOverviewPage() {
     const loadChatData = async () => {
       try {
         const storedData = await chatStorage.getChatData();
+        console.log('Loaded chat data:', storedData);
         if (storedData) {
+          console.log('Messages count:', storedData.messages?.length);
+          console.log('Total messages:', storedData.totalMessages);
+          console.log('Participants:', storedData.participants);
+          
           // Convert date strings back to Date objects
           if (storedData.messages && storedData.messages.length > 0) {
             storedData.messages = storedData.messages.map((msg: any) => ({
@@ -32,8 +37,10 @@ export default function AnalyticsOverviewPage() {
               start: new Date(storedData.dateRange.start),
               end: new Date(storedData.dateRange.end)
             };
+            console.log('Setting full chat data with', storedData.messages.length, 'messages');
             setChatData(storedData);
           } else {
+            console.log('Setting minimal chat data (no messages)');
             setChatData({
               ...storedData,
               messages: [],
@@ -43,6 +50,8 @@ export default function AnalyticsOverviewPage() {
               }
             });
           }
+        } else {
+          console.log('No stored chat data found');
         }
       } catch (error) {
         console.error('Error loading chat data:', error);

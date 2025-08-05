@@ -24,6 +24,8 @@ export class ChatStorage {
     try {
       // First try localStorage for small files
       const localStorageSize = JSON.stringify(data).length;
+      console.log('Data size:', localStorageSize, 'bytes');
+      
       if (localStorageSize < 4 * 1024 * 1024) { // 4MB limit for localStorage
         localStorage.setItem('chatData', JSON.stringify(data));
         console.log('Stored in localStorage:', localStorageSize, 'bytes');
@@ -35,6 +37,7 @@ export class ChatStorage {
 
     // Use IndexedDB for large files
     try {
+      console.log('Using IndexedDB for large file storage');
       const db = await this.initDB();
       const transaction = db.transaction([this.storeName], 'readwrite');
       const store = transaction.objectStore(this.storeName);
@@ -47,10 +50,13 @@ export class ChatStorage {
       
       return new Promise((resolve, reject) => {
         request.onsuccess = () => {
-          console.log('Stored in IndexedDB');
+          console.log('Stored in IndexedDB successfully');
           resolve();
         };
-        request.onerror = () => reject(request.error);
+        request.onerror = () => {
+          console.error('IndexedDB storage error:', request.error);
+          reject(request.error);
+        };
       });
     } catch (error) {
       console.error('IndexedDB storage failed:', error);
@@ -72,6 +78,7 @@ export class ChatStorage {
 
     // Try IndexedDB
     try {
+      console.log('Trying to retrieve from IndexedDB...');
       const db = await this.initDB();
       const transaction = db.transaction([this.storeName], 'readonly');
       const store = transaction.objectStore(this.storeName);
@@ -80,13 +87,18 @@ export class ChatStorage {
       return new Promise((resolve, reject) => {
         request.onsuccess = () => {
           if (request.result) {
-            console.log('Retrieved from IndexedDB');
+            console.log('Retrieved from IndexedDB successfully');
+            console.log('IndexedDB data:', request.result);
             resolve(request.result.data);
           } else {
+            console.log('No data found in IndexedDB');
             resolve(null);
           }
         };
-        request.onerror = () => reject(request.error);
+        request.onerror = () => {
+          console.error('IndexedDB retrieval error:', request.error);
+          reject(request.error);
+        };
       });
     } catch (error) {
       console.error('IndexedDB retrieval failed:', error);
