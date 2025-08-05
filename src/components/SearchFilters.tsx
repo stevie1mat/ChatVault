@@ -66,7 +66,7 @@ export default function SearchFilters({ participants, dateRange, onFiltersChange
 
         {/* Keyword Search */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="block text-sm font-medium text-gray-900 dark:text-white">
             Search Messages
           </label>
           <div className="relative">
@@ -87,7 +87,7 @@ export default function SearchFilters({ participants, dateRange, onFiltersChange
 
         {/* Date Range */}
         <div className="space-y-3">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="block text-sm font-medium text-gray-900 dark:text-white">
             Date Range
           </label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -162,7 +162,7 @@ export default function SearchFilters({ participants, dateRange, onFiltersChange
 
         {/* Sender Filter */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="block text-sm font-medium text-gray-900 dark:text-white">
             Filter by Sender
           </label>
           <select

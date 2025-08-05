@@ -23,8 +23,8 @@ A modern Next.js web application for parsing and viewing WhatsApp chat exports w
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd whatsapp-chat-parser
+git clone https://github.com/stevie1mat/ChatVault
+cd ChatVault
 ```
 
 2. Install dependencies:
@@ -156,4 +156,8 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## Support
 
-If you encounter any issues or have questions, please open an issue on GitHub.
+If you encounter any issues or have questions, please open an issue on [GitHub](https://github.com/stevie1mat/ChatVault).
+
+## Repository
+
+📁 **GitHub**: [https://github.com/stevie1mat/ChatVault](https://github.com/stevie1mat/ChatVault)
