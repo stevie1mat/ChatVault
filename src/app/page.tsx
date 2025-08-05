@@ -1,35 +1,19 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
-import { ParsedChatData, SearchFilters as SearchFiltersType, ChatMessage } from '@/types/chat';
-import { filterMessages } from '@/utils/chatParser';
+import { useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { ParsedChatData } from '@/types/chat';
 import { chatStorage } from '@/utils/storage';
 import FileUpload from '@/components/FileUpload';
-import SearchFilters from '@/components/SearchFilters';
-import ChatView from '@/components/ChatView';
-import ExportButtons from '@/components/ExportButtons';
 import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Home() {
-  const [chatData, setChatData] = useState<ParsedChatData | null>(null);
-  const [filters, setFilters] = useState<SearchFiltersType>({
-    keyword: '',
-    startDate: null,
-    endDate: null,
-    timeRange: null,
-    sender: null
-  });
+  const router = useRouter();
   const [showHowToDialog, setShowHowToDialog] = useState(false);
-
-  const filteredMessages = useMemo(() => {
-    if (!chatData) return [];
-    return filterMessages(chatData.messages, filters);
-  }, [chatData, filters]);
 
   const handleChatParsed = useCallback(async (data: ParsedChatData) => {
     console.log('handleChatParsed called with data:', data);
     console.log('Messages count:', data.messages.length);
-    setChatData(data);
     
     // Store chat data using the new storage system
     console.log('Storing chat data...');
@@ -54,15 +38,14 @@ export default function Home() {
       const storedData = await chatStorage.getChatData();
       console.log('Verification - Stored messages:', storedData?.messages?.length || 0);
       
+      // Redirect to chat page after successful upload
+      router.push('/chat');
+      
     } catch (error) {
       console.error('Error storing chat data:', error);
       alert('Failed to store chat data. Please try again or use a smaller chat file.');
     }
-  }, []);
-
-  const handleFiltersChange = useCallback((newFilters: SearchFiltersType) => {
-    setFilters(newFilters);
-  }, []);
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -76,24 +59,12 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              {!chatData && (
-                <button
-                  onClick={() => setShowHowToDialog(true)}
-                  className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-3 py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
-                >
-                  How to?
-                </button>
-              )}
-              {chatData && (
-                <a href="/chat" className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-3 py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
-                  💬 Chat
-                </a>
-              )}
-              {chatData && (
-                <a href="/analytics" className="text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 px-3 py-1 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors">
-                  📊 Analytics
-                </a>
-              )}
+              <button
+                onClick={() => setShowHowToDialog(true)}
+                className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-3 py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+              >
+                How to?
+              </button>
               <a
                 href="https://github.com/stevie1mat/ChatVault"
             target="_blank"
@@ -161,132 +132,52 @@ export default function Home() {
       )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {!chatData ? (
-          <div className="space-y-20">
-            <div className="text-center space-y-8">
-              <div className="space-y-6">
-                <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Search Your ChatVault
-          </h2>
-                <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-                  Upload your WhatsApp chat export and explore your conversations with powerful search, filtering, and analysis tools.
-                </p>
-              </div>
-            </div>
-            <div className="max-w-2xl mx-auto">
-              <FileUpload onChatParsed={handleChatParsed} />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              <div className="text-center space-y-4 p-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-3xl border border-blue-100 dark:border-blue-800/30">
-                <div className="text-4xl mb-4">🔍</div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Smart Search
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                  Find any message instantly with real-time keyword search and advanced filtering options.
-                </p>
-              </div>
-
-              <div className="text-center space-y-4 p-8 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-3xl border border-purple-100 dark:border-purple-800/30">
-                <div className="text-4xl mb-4">📊</div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Chat Analytics
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                  Analyze your chat patterns with date ranges, time filters, and participant insights.
-                </p>
-              </div>
-
-              <div className="text-center space-y-4 p-8 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-3xl border border-green-100 dark:border-green-800/30">
-                <div className="text-4xl mb-4">📤</div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Export & Share
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                  Export filtered conversations in multiple formats for backup or analysis.
-                </p>
-              </div>
+        <div className="space-y-20">
+          <div className="text-center space-y-8">
+            <div className="space-y-6">
+              <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Search Your ChatVault
+              </h2>
+              <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                Upload your WhatsApp chat export and explore your conversations with powerful search, filtering, and analysis tools.
+              </p>
             </div>
           </div>
-        ) : (
-          // Chat view with enhanced design
-          <div className="space-y-8">
-            {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-              {/* Filters sidebar */}
-              <div className="lg:col-span-1">
-                <div className="sticky top-8 space-y-6">
-                  <SearchFilters
-                    participants={chatData.participants}
-                    dateRange={chatData.dateRange}
-                    onFiltersChange={handleFiltersChange}
-                    messages={filteredMessages}
-                  />
-                </div>
-              </div>
+          <div className="max-w-2xl mx-auto">
+            <FileUpload onChatParsed={handleChatParsed} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div className="text-center space-y-4 p-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-3xl border border-blue-100 dark:border-blue-800/30">
+              <div className="text-4xl mb-4">🔍</div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                Smart Search
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Find any message instantly with real-time keyword search and advanced filtering options.
+              </p>
+            </div>
 
-              {/* Chat view */}
-              <div className="lg:col-span-3">
-                <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl h-[700px] flex flex-col overflow-hidden">
-                  {/* Chat header */}
-                  <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div>
-                          <h4 className="text-xl font-semibold text-gray-900 dark:text-white">
-                            Messages
-                          </h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {filteredMessages.length} messages found
-                          </p>
-                          {chatData && (
-                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                              {chatData.dateRange.start.toLocaleDateString()} - {chatData.dateRange.end.toLocaleDateString()}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        {chatData && (
-                          <>
-                            <button
-                              onClick={() => handleFiltersChange({ ...filters, sender: null })}
-                              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                                !filters.sender
-                                  ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                                  : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
-                              }`}
-                            >
-                              All
-                            </button>
-                            {chatData.participants.map((participant) => (
-                              <button
-                                key={participant}
-                                onClick={() => handleFiltersChange({ ...filters, sender: filters.sender === participant ? null : participant })}
-                                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                                  filters.sender === participant
-                                    ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                                    : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
-                                }`}
-                              >
-                                {participant}
-                              </button>
-                            ))}
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+            <div className="text-center space-y-4 p-8 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-3xl border border-purple-100 dark:border-purple-800/30">
+              <div className="text-4xl mb-4">📊</div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                Chat Analytics
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Analyze your chat patterns with date ranges, time filters, and participant insights.
+              </p>
+            </div>
 
-                  {/* Content */}
-                  <div className="flex-1 overflow-hidden">
-                    <ChatView messages={filteredMessages} />
-                  </div>
-                </div>
-              </div>
+            <div className="text-center space-y-4 p-8 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-3xl border border-green-100 dark:border-green-800/30">
+              <div className="text-4xl mb-4">📤</div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                Export & Share
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Export filtered conversations in multiple formats for backup or analysis.
+              </p>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
