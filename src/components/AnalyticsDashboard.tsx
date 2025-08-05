@@ -25,6 +25,19 @@ interface AnalyticsData {
       normal: number; // 5-30 minutes
       slow: number; // 30+ minutes
     };
+    participantResponseTimes: Array<{
+      name: string;
+      averageResponseTime: number;
+      fastestResponse: number;
+      slowestResponse: number;
+      totalResponses: number;
+      responseTimeDistribution: {
+        immediate: number;
+        quick: number;
+        normal: number;
+        slow: number;
+      };
+    }>;
   };
   specialOccasions: {
     wishes: { count: number; messages: string[] };
@@ -81,6 +94,7 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
             normal: 0,
             slow: 0,
           },
+          participantResponseTimes: [],
         },
         specialOccasions: {
           wishes: { count: 0, messages: [] },
@@ -164,6 +178,20 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
       slow: 0, // 30+ minutes
     };
 
+    // Calculate participant-specific response times
+    const participantResponseData = new Map<string, {
+      responseTimes: number[];
+      distribution: { immediate: number; quick: number; normal: number; slow: number };
+    }>();
+
+    // Initialize participant data
+    participants.forEach(name => {
+      participantResponseData.set(name, {
+        responseTimes: [],
+        distribution: { immediate: 0, quick: 0, normal: 0, slow: 0 }
+      });
+    });
+
     // Calculate time differences between consecutive messages
     for (let i = 1; i < messages.length; i++) {
       const currentMessage = messages[i];
@@ -177,7 +205,7 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
         if (minutesDiff > 0 && minutesDiff < 1440) { // Only count responses within 24 hours
           responseTimes.push(minutesDiff);
           
-          // Categorize response time
+          // Categorize response time for overall stats
           if (minutesDiff <= 1) {
             responseTimeDistribution.immediate++;
           } else if (minutesDiff <= 5) {
@@ -187,9 +215,49 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
           } else {
             responseTimeDistribution.slow++;
           }
+
+          // Categorize response time for participant stats
+          const participantData = participantResponseData.get(currentMessage.sender);
+          if (participantData) {
+            participantData.responseTimes.push(minutesDiff);
+            
+            if (minutesDiff <= 1) {
+              participantData.distribution.immediate++;
+            } else if (minutesDiff <= 5) {
+              participantData.distribution.quick++;
+            } else if (minutesDiff <= 30) {
+              participantData.distribution.normal++;
+            } else {
+              participantData.distribution.slow++;
+            }
+          }
         }
       }
     }
+
+    // Calculate participant response time statistics
+    const participantResponseTimes = participants.map(name => {
+      const data = participantResponseData.get(name);
+      if (!data || data.responseTimes.length === 0) {
+        return {
+          name,
+          averageResponseTime: 0,
+          fastestResponse: 0,
+          slowestResponse: 0,
+          totalResponses: 0,
+          responseTimeDistribution: { immediate: 0, quick: 0, normal: 0, slow: 0 }
+        };
+      }
+
+      return {
+        name,
+        averageResponseTime: Math.round(data.responseTimes.reduce((sum, time) => sum + time, 0) / data.responseTimes.length),
+        fastestResponse: Math.min(...data.responseTimes),
+        slowestResponse: Math.max(...data.responseTimes),
+        totalResponses: data.responseTimes.length,
+        responseTimeDistribution: data.distribution
+      };
+    }).sort((a, b) => b.totalResponses - a.totalResponses); // Sort by most responsive
 
     const responseTimeStats = {
       averageResponseTime: responseTimes.length > 0 
@@ -197,7 +265,8 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
         : 0,
       fastestResponse: responseTimes.length > 0 ? Math.min(...responseTimes) : 0,
       slowestResponse: responseTimes.length > 0 ? Math.max(...responseTimes) : 0,
-      responseTimeDistribution
+      responseTimeDistribution,
+      participantResponseTimes
     };
 
     // Calculate participant stats efficiently
@@ -480,58 +549,57 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
             </div>
           </div>
           
-          {/* Response Time Distribution */}
+          {/* Participant Response Times */}
           <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
-            <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Response Time Distribution</h5>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Immediate (≤1 min)</span>
-                <div className="flex items-center space-x-2">
-                  <div className="w-32 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
-                    <div 
-                      className="bg-green-500 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${(analytics.responseTimeStats.responseTimeDistribution.immediate / (analytics.responseTimeStats.responseTimeDistribution.immediate + analytics.responseTimeStats.responseTimeDistribution.quick + analytics.responseTimeStats.responseTimeDistribution.normal + analytics.responseTimeStats.responseTimeDistribution.slow)) * 100}%` }}
-                    ></div>
+            <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Response Times by Participant</h5>
+            <div className="space-y-4">
+              {analytics.responseTimeStats.participantResponseTimes.map((participant, index) => (
+                <div key={participant.name} className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${
+                        index === 0 ? 'bg-yellow-500' : 
+                        index === 1 ? 'bg-gray-400' : 
+                        'bg-orange-500'
+                      }`}>
+                        {index + 1}
+                      </div>
+                      <div>
+                        <div className="font-medium text-gray-900 dark:text-white">{participant.name}</div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                          {participant.totalResponses} responses • Avg: {participant.averageResponseTime} min
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                        {participant.fastestResponse.toFixed(1)} - {participant.slowestResponse.toFixed(1)} min
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Fastest - Slowest</div>
+                    </div>
                   </div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">{analytics.responseTimeStats.responseTimeDistribution.immediate}</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Quick (1-5 min)</span>
-                <div className="flex items-center space-x-2">
-                  <div className="w-32 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
-                    <div 
-                      className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${(analytics.responseTimeStats.responseTimeDistribution.quick / (analytics.responseTimeStats.responseTimeDistribution.immediate + analytics.responseTimeStats.responseTimeDistribution.quick + analytics.responseTimeStats.responseTimeDistribution.normal + analytics.responseTimeStats.responseTimeDistribution.slow)) * 100}%` }}
-                    ></div>
+                  
+                  {/* Response Time Distribution for this participant */}
+                  <div className="grid grid-cols-4 gap-2">
+                    <div className="text-center">
+                      <div className="text-xs font-semibold text-green-600 dark:text-green-400">{participant.responseTimeDistribution.immediate}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Immediate</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xs font-semibold text-blue-600 dark:text-blue-400">{participant.responseTimeDistribution.quick}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Quick</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xs font-semibold text-orange-600 dark:text-orange-400">{participant.responseTimeDistribution.normal}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Normal</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xs font-semibold text-red-600 dark:text-red-400">{participant.responseTimeDistribution.slow}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Slow</div>
+                    </div>
                   </div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">{analytics.responseTimeStats.responseTimeDistribution.quick}</span>
                 </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Normal (5-30 min)</span>
-                <div className="flex items-center space-x-2">
-                  <div className="w-32 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
-                    <div 
-                      className="bg-orange-500 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${(analytics.responseTimeStats.responseTimeDistribution.normal / (analytics.responseTimeStats.responseTimeDistribution.immediate + analytics.responseTimeStats.responseTimeDistribution.quick + analytics.responseTimeStats.responseTimeDistribution.normal + analytics.responseTimeStats.responseTimeDistribution.slow)) * 100}%` }}
-                    ></div>
-                  </div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">{analytics.responseTimeStats.responseTimeDistribution.normal}</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Slow (30+ min)</span>
-                <div className="flex items-center space-x-2">
-                  <div className="w-32 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
-                    <div 
-                      className="bg-red-500 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${(analytics.responseTimeStats.responseTimeDistribution.slow / (analytics.responseTimeStats.responseTimeDistribution.immediate + analytics.responseTimeStats.responseTimeDistribution.quick + analytics.responseTimeStats.responseTimeDistribution.normal + analytics.responseTimeStats.responseTimeDistribution.slow)) * 100}%` }}
-                    ></div>
-                  </div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">{analytics.responseTimeStats.responseTimeDistribution.slow}</span>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
