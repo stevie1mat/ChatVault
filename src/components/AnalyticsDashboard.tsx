@@ -15,6 +15,12 @@ interface AnalyticsData {
   mostActiveHour: { hour: number; count: number };
   mostActiveDay: { day: string; count: number };
   mostActiveDate: { date: string; count: number };
+  specialOccasions: {
+    wishes: { count: number; messages: string[] };
+    congratulations: { count: number; messages: string[] };
+    festivals: { count: number; messages: string[] };
+    specialDays: { count: number; messages: string[] };
+  };
   participantStats: Array<{
     name: string;
     messageCount: number;
@@ -40,6 +46,12 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
         mostActiveHour: { hour: 0, count: 0 },
         mostActiveDay: { day: '', count: 0 },
         mostActiveDate: { date: '', count: 0 },
+        specialOccasions: {
+          wishes: { count: 0, messages: [] },
+          congratulations: { count: 0, messages: [] },
+          festivals: { count: 0, messages: [] },
+          specialDays: { count: 0, messages: [] },
+        },
         participantStats: [],
         hourlyActivity: [],
         dailyActivity: [],
@@ -125,6 +137,73 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
       longest: Math.max(...messageLengths)
     };
 
+    // Special occasion detection
+    const wishesKeywords = [
+      'happy birthday', 'birthday', 'happy new year', 'new year', 'merry christmas', 'christmas',
+      'happy anniversary', 'anniversary', 'congratulations', 'congrats', 'well done', 'good job',
+      'happy diwali', 'diwali', 'happy holi', 'holi', 'happy eid', 'eid', 'happy ramadan', 'ramadan',
+      'happy thanksgiving', 'thanksgiving', 'happy valentine', 'valentine', 'happy halloween', 'halloween',
+      'happy easter', 'easter', 'happy mothers day', 'mothers day', 'happy fathers day', 'fathers day',
+      'wish you', 'wishing you', 'hope you', 'best wishes', 'good luck', 'all the best',
+      'happy', 'joy', 'celebration', 'party', 'cheers', 'toast'
+    ];
+
+    const congratulationsKeywords = [
+      'congratulations', 'congrats', 'well done', 'good job', 'excellent', 'amazing',
+      'proud of you', 'great work', 'fantastic', 'brilliant', 'outstanding', 'superb',
+      'achievement', 'success', 'winner', 'champion', 'victory', 'accomplishment'
+    ];
+
+    const festivalKeywords = [
+      'diwali', 'holi', 'eid', 'ramadan', 'christmas', 'easter', 'thanksgiving',
+      'halloween', 'valentine', 'mothers day', 'fathers day', 'independence day',
+      'republic day', 'gandhi jayanti', 'republic day', 'independence day',
+      'festival', 'celebration', 'ceremony', 'ritual', 'tradition'
+    ];
+
+    const specialDayKeywords = [
+      'birthday', 'anniversary', 'wedding', 'engagement', 'graduation', 'promotion',
+      'new job', 'new house', 'moving', 'travel', 'vacation', 'holiday',
+      'first day', 'last day', 'farewell', 'welcome', 'goodbye', 'hello'
+    ];
+
+    const wishesMessages: string[] = [];
+    const congratulationsMessages: string[] = [];
+    const festivalsMessages: string[] = [];
+    const specialDaysMessages: string[] = [];
+
+    // Analyze messages for special occasions
+    messages.forEach(msg => {
+      const content = msg.content.toLowerCase();
+      
+      // Check for wishes
+      if (wishesKeywords.some(keyword => content.includes(keyword))) {
+        wishesMessages.push(msg.content);
+      }
+      
+      // Check for congratulations
+      if (congratulationsKeywords.some(keyword => content.includes(keyword))) {
+        congratulationsMessages.push(msg.content);
+      }
+      
+      // Check for festivals
+      if (festivalKeywords.some(keyword => content.includes(keyword))) {
+        festivalsMessages.push(msg.content);
+      }
+      
+      // Check for special days
+      if (specialDayKeywords.some(keyword => content.includes(keyword))) {
+        specialDaysMessages.push(msg.content);
+      }
+    });
+
+    const specialOccasions = {
+      wishes: { count: wishesMessages.length, messages: wishesMessages.slice(0, 10) }, // Show first 10
+      congratulations: { count: congratulationsMessages.length, messages: congratulationsMessages.slice(0, 10) },
+      festivals: { count: festivalsMessages.length, messages: festivalsMessages.slice(0, 10) },
+      specialDays: { count: specialDaysMessages.length, messages: specialDaysMessages.slice(0, 10) }
+    };
+
     return {
       totalMessages,
       totalDays,
@@ -132,6 +211,7 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
       mostActiveHour,
       mostActiveDay,
       mostActiveDate,
+      specialOccasions,
       participantStats,
       hourlyActivity: hourlyCounts.map((count, hour) => ({ hour, count })),
       dailyActivity: Array.from(dailyCounts.entries()).map(([day, count]) => ({ day, count })),
@@ -276,6 +356,60 @@ export default function AnalyticsDashboard({ messages, participants }: Analytics
             <div className="text-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
               <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{analytics.messageLengthStats.longest}</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Longest</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Special Occasions */}
+        <div className="space-y-6">
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Special Occasions</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Wishes */}
+            <div className="bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 rounded-2xl p-6 border border-pink-100 dark:border-pink-800/30">
+              <div className="text-2xl mb-2">🎉</div>
+              <div className="text-2xl font-bold text-pink-600 dark:text-pink-400">{analytics.specialOccasions.wishes.count}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Wishes</div>
+              {analytics.specialOccasions.wishes.messages.length > 0 && (
+                <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+                  "{analytics.specialOccasions.wishes.messages[0].substring(0, 30)}..."
+                </div>
+              )}
+            </div>
+
+            {/* Congratulations */}
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-6 border border-green-100 dark:border-green-800/30">
+              <div className="text-2xl mb-2">🏆</div>
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">{analytics.specialOccasions.congratulations.count}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Congratulations</div>
+              {analytics.specialOccasions.congratulations.messages.length > 0 && (
+                <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+                  "{analytics.specialOccasions.congratulations.messages[0].substring(0, 30)}..."
+                </div>
+              )}
+            </div>
+
+            {/* Festivals */}
+            <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-2xl p-6 border border-orange-100 dark:border-orange-800/30">
+              <div className="text-2xl mb-2">🎊</div>
+              <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{analytics.specialOccasions.festivals.count}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Festivals</div>
+              {analytics.specialOccasions.festivals.messages.length > 0 && (
+                <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+                  "{analytics.specialOccasions.festivals.messages[0].substring(0, 30)}..."
+                </div>
+              )}
+            </div>
+
+            {/* Special Days */}
+            <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800/30">
+              <div className="text-2xl mb-2">📅</div>
+              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{analytics.specialOccasions.specialDays.count}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Special Days</div>
+              {analytics.specialOccasions.specialDays.messages.length > 0 && (
+                <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+                  "{analytics.specialOccasions.specialDays.messages[0].substring(0, 30)}..."
+                </div>
+              )}
             </div>
           </div>
         </div>
