@@ -49,12 +49,9 @@ export default function SearchFilters({ participants, dateRange, onFiltersChange
       <div className="space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <span className="text-2xl">🔍</span>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-              Search & Filters
-            </h3>
-          </div>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+            🔍 Search & Filters
+          </h3>
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
