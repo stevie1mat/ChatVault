@@ -87,6 +87,8 @@ export default function ChatPage() {
           filters={filters} 
           onFiltersChange={setFilters}
           participants={chatData.participants}
+          dateRange={chatData.dateRange}
+          messages={filteredMessages}
         />
       </div>
 
