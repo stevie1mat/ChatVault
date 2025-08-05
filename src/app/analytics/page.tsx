@@ -18,6 +18,7 @@ export default function AnalyticsPage() {
 
   // Get chat data from localStorage or sessionStorage
   useEffect(() => {
+    console.log('Analytics page mounted');
     const storedChatData = localStorage.getItem('chatData');
     console.log('Stored chat data:', storedChatData);
     if (storedChatData) {
@@ -85,7 +86,7 @@ export default function AnalyticsPage() {
               <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
                 No chat data available. Please upload a chat file on the main page to view analytics.
               </p>
-              <div className="mt-4">
+              <div className="mt-4 space-y-2">
                 <button 
                   onClick={() => {
                     const stored = localStorage.getItem('chatData');
@@ -94,14 +95,32 @@ export default function AnalyticsPage() {
                       try {
                         const parsed = JSON.parse(stored);
                         console.log('Manual check - parsed data:', parsed);
+                        console.log('Manual check - messages count:', parsed.messages?.length);
+                        console.log('Manual check - participants:', parsed.participants);
+                        console.log('Manual check - dateRange:', parsed.dateRange);
                       } catch (e) {
                         console.error('Manual check - parse error:', e);
                       }
+                    } else {
+                      console.log('Manual check - No data found in localStorage');
+                      console.log('Manual check - All localStorage keys:', Object.keys(localStorage));
                     }
                   }}
                   className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                 >
                   Debug: Check localStorage
+                </button>
+                <button 
+                  onClick={() => {
+                    localStorage.setItem('test', 'test-value');
+                    const testValue = localStorage.getItem('test');
+                    console.log('localStorage test - stored:', testValue);
+                    localStorage.removeItem('test');
+                    console.log('localStorage test - All keys:', Object.keys(localStorage));
+                  }}
+                  className="px-4 py-2 bg-blue-200 dark:bg-blue-700 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-300 dark:hover:bg-blue-600 transition-colors"
+                >
+                  Test localStorage
                 </button>
               </div>
             </div>
