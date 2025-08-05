@@ -43,8 +43,7 @@ export default function SearchFilters({ participants, dateRange, onFiltersChange
   const hasActiveFilters = filters.keyword || filters.startDate || filters.endDate || filters.timeRange || filters.sender;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl p-8">
-      <div className="space-y-8">
+    <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl p-8 space-y-8">
         {/* Header */}
         <div className="flex items-center justify-end">
           {hasActiveFilters && (
@@ -138,9 +137,6 @@ export default function SearchFilters({ participants, dateRange, onFiltersChange
             </div>
           </div>
         )}
-
-
-      </div>
     </div>
   );
 } 
