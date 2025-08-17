@@ -197,7 +197,7 @@ export default function ParticipantsPage() {
                     </span>
                   </div>
                   <div className="flex space-x-1">
-                    {participant.hourlyActivity.map((count, hour) => (
+                    {participant.hourlyActivity.map((count: number, hour: number) => (
                       <div
                         key={hour}
                         className="flex-1 bg-gray-200 dark:bg-gray-700 rounded"
@@ -229,7 +229,7 @@ export default function ParticipantsPage() {
                     </span>
                   </div>
                   <div className="flex space-x-1">
-                    {participant.dailyActivity.map((count, day) => (
+                    {participant.dailyActivity.map((count: number, day: number) => (
                       <div
                         key={day}
                         className="flex-1 bg-gray-200 dark:bg-gray-700 rounded"

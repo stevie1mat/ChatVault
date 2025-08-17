@@ -138,7 +138,7 @@ export default function Home() {
                   </div>
                   <div className="flex-1">
                     <div className="bg-blue-100 rounded-2xl rounded-tl-md px-4 py-2 max-w-xs">
-                      <p className="text-sm text-gray-900">Hey! How's the project going?</p>
+                      <p className="text-sm text-gray-900">Hey! How&apos;s the project going?</p>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">10:23 AM</p>
                   </div>
@@ -162,7 +162,7 @@ export default function Home() {
                   </div>
                   <div className="flex-1">
                     <div className="bg-purple-100 rounded-2xl rounded-tl-md px-4 py-2 max-w-xs">
-                      <p className="text-sm text-gray-900">Perfect! Let's schedule a review meeting</p>
+                      <p className="text-sm text-gray-900">Perfect! Let&apos;s schedule a review meeting</p>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">10:28 AM</p>
                   </div>
@@ -221,7 +221,7 @@ export default function Home() {
               <div className="text-center">
                 <div className="text-lg font-bold mb-2">Search</div>
                 <div className="text-xs opacity-90 mb-1">23 results found</div>
-                <div className="text-xs bg-orange-400 px-2 py-1 rounded-full">"meeting"</div>
+                <div className="text-xs bg-orange-400 px-2 py-1 rounded-full">&ldquo;meeting&rdquo;</div>
               </div>
             </div>
 
@@ -357,7 +357,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-600 leading-relaxed">
-                "This tool helped me analyze team communication patterns and improve our collaboration. The search features are incredibly powerful!"
+                &ldquo;This tool helped me analyze team communication patterns and improve our collaboration. The search features are incredibly powerful!&rdquo;
               </p>
             </div>
             
@@ -372,7 +372,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-600 leading-relaxed">
-                "The analytics dashboard provides amazing insights. I can track engagement patterns and identify key conversation trends easily."
+                &ldquo;The analytics dashboard provides amazing insights. I can track engagement patterns and identify key conversation trends easily.&rdquo;
               </p>
             </div>
             
@@ -387,7 +387,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-600 leading-relaxed">
-                "Perfect for research projects! The filtering capabilities help me find specific conversations quickly and efficiently."
+                &ldquo;Perfect for research projects! The filtering capabilities help me find specific conversations quickly and efficiently.&rdquo;
               </p>
             </div>
           </div>
@@ -496,7 +496,7 @@ export default function Home() {
               </div>
               <div className="flex items-start space-x-4">
                 <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">3</span>
-                <p>Choose "Without Media" to get a .txt file</p>
+                <p>Choose &ldquo;Without Media&rdquo; to get a .txt file</p>
               </div>
               <div className="flex items-start space-x-4">
                 <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">4</span>

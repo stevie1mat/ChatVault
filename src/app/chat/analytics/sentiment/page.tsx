@@ -216,7 +216,7 @@ export default function SentimentAnalysisPage() {
                         <span className="text-sm text-gray-500 dark:text-gray-400">•</span>
                         <span className="text-sm text-gray-500 dark:text-gray-400">{highlight.timestamp}</span>
                       </div>
-                      <p className="text-gray-700 dark:text-gray-300 italic">"{highlight.message}"</p>
+                      <p className="text-gray-700 dark:text-gray-300 italic">&ldquo;{highlight.message}&rdquo;</p>
                     </div>
                     <div className="text-right ml-4">
                       <div className="text-sm font-medium text-blue-600 dark:text-blue-400">{highlight.sentiment}</div>

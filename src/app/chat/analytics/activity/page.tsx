@@ -53,7 +53,7 @@ export default function ActivityPage() {
     
     let totalMessages = 0;
     let averageMessagesPerDay = 0;
-    let mostActiveDate = null;
+    let mostActiveDate: Date | null = null;
     let mostActiveDateCount = 0;
 
     chatData.messages.forEach(message => {
@@ -93,7 +93,7 @@ export default function ActivityPage() {
       mostActiveHour,
       mostActiveDay,
       mostActiveMonth,
-      mostActiveDate,
+      mostActiveDate: mostActiveDate as Date | null,
       mostActiveDateCount,
       daysActive
     };

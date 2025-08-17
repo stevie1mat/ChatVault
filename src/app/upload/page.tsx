@@ -228,7 +228,7 @@ export default function UploadPage() {
               </div>
               <div className="flex items-start space-x-4">
                 <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">3</span>
-                <p>Choose "Without Media" to get a .txt file</p>
+                <p>Choose &ldquo;Without Media&rdquo; to get a .txt file</p>
               </div>
               <div className="flex items-start space-x-4">
                 <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">4</span>

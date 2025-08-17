@@ -197,7 +197,7 @@ export default function TopicModelingPage() {
                       <div className="space-y-1">
                         {theme.keyMessages.slice(0, 3).map((message, messageIndex) => (
                           <div key={messageIndex} className="text-xs text-gray-600 dark:text-gray-400 italic">
-                            "{message.length > 50 ? message.substring(0, 50) + '...' : message}"
+                            &ldquo;{message.length > 50 ? message.substring(0, 50) + '...' : message}&rdquo;
                           </div>
                         ))}
                       </div>

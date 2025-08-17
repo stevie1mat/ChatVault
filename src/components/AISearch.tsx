@@ -167,7 +167,7 @@ export default function AISearch({ messages, onSearchResults, onClearSearch }: A
               🤖 AI found {searchResults.length} relevant messages
             </span>
             <span className="text-xs text-blue-600 dark:text-blue-400">
-              Query: "{query}"
+              Query: &ldquo;{query}&rdquo;
             </span>
           </div>
           <div className="text-xs text-blue-700 dark:text-blue-300">

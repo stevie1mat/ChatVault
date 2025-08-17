@@ -67,7 +67,7 @@ export default function AISearchResults({ results, onJumpToMessage, searchReason
       
       <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-b-xl">
         <div className="text-xs text-gray-600 dark:text-gray-400 text-center">
-          💡 Tip: Use natural language queries like "when did we discuss the project?" or "find messages about dinner plans"
+          💡 Tip: Use natural language queries like &ldquo;when did we discuss the project?&rdquo; or &ldquo;find messages about dinner plans&rdquo;
         </div>
       </div>
     </div>

@@ -348,7 +348,7 @@ export default function ResponseTimeAnalysisPage() {
                       <div className="space-y-1">
                         {insight.examples.slice(0, 2).map((example, exampleIndex) => (
                           <div key={exampleIndex} className="text-xs text-gray-600 dark:text-gray-400 italic">
-                            "{example.length > 60 ? example.substring(0, 60) + '...' : example}"
+                            &ldquo;{example.length > 60 ? example.substring(0, 60) + '...' : example}&rdquo;
                           </div>
                         ))}
                       </div>
