@@ -2,6 +2,8 @@
 
 A modern web application for searching, filtering, and analyzing WhatsApp chat exports. Upload your `.txt` chat files and explore conversations with powerful search tools, date filtering, and comprehensive analytics.
 
+![ChatVault Homepage](public/homepage.png)
+
 ## 📖 Description
 
 ChatVault is a powerful web application that helps you explore and analyze your WhatsApp conversations. Simply upload your exported chat files and gain insights into your messaging patterns, search through conversations, and export filtered results.
