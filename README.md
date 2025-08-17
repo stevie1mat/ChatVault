@@ -504,6 +504,7 @@ The MIT License is a permissive license that allows you to:
 
 ## 📞 Contact
 
+- **🌐 Website**: [stevenmathew.dev](https://stevenmathew.dev)
 - **GitHub**: [@stevie1mat](https://github.com/stevie1mat)
 - **Repository**: [https://github.com/stevie1mat/ChatVault](https://github.com/stevie1mat/ChatVault)
 - **Issues**: [GitHub Issues](https://github.com/stevie1mat/ChatVault/issues)
